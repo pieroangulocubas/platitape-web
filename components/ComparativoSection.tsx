@@ -360,33 +360,33 @@ export default function ComparativoSection() {
                   {row.label}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-1.5 mb-1.5">
+              <div className="grid grid-cols-2 gap-2 mb-2">
                 {cols.map((col) => (
                   <div
                     key={col.key}
-                    className="rounded-xl px-2 py-2 text-center"
+                    className="rounded-xl px-2.5 py-2.5 text-center"
                     style={{ background: "rgba(28,15,76,0.03)" }}
                   >
                     <div
-                      className="text-[0.55rem] font-bold uppercase tracking-wide mb-1"
-                      style={{ color: "rgba(15,10,46,0.35)" }}
+                      className="text-[0.65rem] font-bold uppercase tracking-wide mb-1"
+                      style={{ color: "rgba(15,10,46,0.4)" }}
                     >
                       {col.label}
                     </div>
-                    <div className="text-[0.68rem] font-bold leading-tight" style={{ color: "rgba(15,10,46,0.55)" }}>
+                    <div className="text-xs font-bold leading-tight" style={{ color: "rgba(15,10,46,0.6)" }}>
                       {row[col.key]}
                     </div>
                   </div>
                 ))}
               </div>
               <div
-                className="rounded-xl px-2 py-2 text-center flex items-center justify-center gap-2"
+                className="rounded-xl px-2.5 py-2.5 text-center flex items-center justify-center gap-2 flex-wrap"
                 style={{ background: "linear-gradient(160deg, #6cdcff 0%, #bc45e9 65%, #a233d4 100%)" }}
               >
-                <div className="text-[0.55rem] font-black uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.85)" }}>
+                <div className="text-[0.65rem] font-black uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.85)" }}>
                   platita.pe
                 </div>
-                <div className="text-[0.68rem] font-black leading-tight text-white">
+                <div className="text-xs font-black leading-tight text-white">
                   {row.platita}
                 </div>
               </div>

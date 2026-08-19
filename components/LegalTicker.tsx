@@ -136,9 +136,9 @@ export function RespaldoLegalBand() {
         {/* Label fijo a la izquierda */}
         <span
           style={{
-            fontSize: "0.58rem",
+            fontSize: "0.7rem",
             fontWeight: 800,
-            letterSpacing: "0.14em",
+            letterSpacing: "0.1em",
             textTransform: "uppercase",
             color: "#1c0f4c",
             flexShrink: 0,
@@ -179,9 +179,9 @@ export function SociosEstrategicosBand() {
       >
         <span
           style={{
-            fontSize: "0.58rem",
+            fontSize: "0.7rem",
             fontWeight: 800,
-            letterSpacing: "0.14em",
+            letterSpacing: "0.1em",
             textTransform: "uppercase",
             color: "#1c0f4c",
             flexShrink: 0,

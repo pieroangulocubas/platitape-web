@@ -232,7 +232,7 @@ function ProjectCard({ p }: { p: ProjectType }) {
               key={s.label}
               style={{ flex: 1, background: "#eef2f9", border: "1px solid #d2dcea", borderRadius: "10px", padding: "8px 10px" }}
             >
-              <p style={{ color: "rgba(15,10,46,0.4)", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", margin: 0 }}>
+              <p style={{ color: "rgba(15,10,46,0.4)", fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", margin: 0 }}>
                 {s.label}
               </p>
               <p style={{ color: "#1c0f4c", fontWeight: 700, fontSize: "0.8rem", margin: "2px 0 0" }}>

@@ -112,7 +112,7 @@ export default function SimuladorSection() {
 
           {/* ── Panel 1: inputs ─────────────────────────────── */}
           <div
-            className="rounded-3xl p-6"
+            className="rounded-3xl p-4 sm:p-6"
             style={{ background: "#ffffff", border: "1px solid #d2dcea", boxShadow: "0 1px 3px rgba(8,10,30,0.04), 0 8px 24px rgba(8,10,30,0.06)" }}
           >
             <p className="text-sm font-black mb-4" style={{ color: "#1c0f4c" }}>
@@ -175,7 +175,7 @@ export default function SimuladorSection() {
 
           {/* ── Panel 2: proyección ─────────────────────────────── */}
           <div
-            className="rounded-3xl p-6"
+            className="rounded-3xl p-4 sm:p-6"
             style={{ background: "#ffffff", border: "1px solid #d2dcea", boxShadow: "0 1px 3px rgba(8,10,30,0.04), 0 8px 24px rgba(8,10,30,0.06)", minWidth: 0 }}
           >
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
@@ -218,30 +218,31 @@ export default function SimuladorSection() {
             </div>
 
             {/* Bar chart */}
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col gap-2 mb-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-bold" style={{ color: "#1c0f4c" }}>Detalle de proyección</p>
-              <div className="flex items-center gap-3 text-[0.65rem] font-semibold" style={{ color: "rgba(15,10,46,0.45)" }}>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.65rem] font-semibold" style={{ color: "rgba(15,10,46,0.45)" }}>
                 <span className="inline-flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full" style={{ background: "#bc45e9" }} /> Ingreso mensual
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: "#bc45e9" }} /> Ingreso mensual
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full" style={{ background: "rgba(188,69,233,0.25)" }} /> Capital invertido
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: "rgba(188,69,233,0.25)" }} /> Capital invertido
                 </span>
               </div>
             </div>
-            <div className="overflow-x-auto pb-1">
-              <div className="flex items-end gap-2" style={{ minHeight: "140px", minWidth: months > 12 ? `${months * 40}px` : undefined }}>
+            <div className="overflow-x-auto pb-1 -mx-1 px-1">
+              <div className="flex items-end gap-1 sm:gap-2" style={{ minHeight: "140px" }}>
                 {Array.from({ length: months }, (_, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-1.5" style={{ minWidth: "32px" }}>
-                    <span className="text-[0.6rem] font-bold whitespace-nowrap" style={{ color: "#bc45e9" }}>
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1 sm:gap-1.5 min-w-5 sm:min-w-8">
+                    <span className="hidden sm:block text-[0.6rem] font-bold whitespace-nowrap" style={{ color: "#bc45e9" }}>
                       S/{fmt(monthlyEarnings)}
                     </span>
                     <div
                       className="w-full rounded-t-md"
                       style={{ height: "80px", background: "linear-gradient(180deg, #bc45e9 0%, #8b2fc9 100%)" }}
                     />
-                    <span className="text-[0.6rem] font-semibold" style={{ color: "rgba(15,10,46,0.4)" }}>
-                      Mes {i + 1}
+                    <span className="text-[0.55rem] sm:text-[0.6rem] font-semibold whitespace-nowrap" style={{ color: "rgba(15,10,46,0.4)" }}>
+                      <span className="sm:hidden">{i + 1}</span>
+                      <span className="hidden sm:inline">Mes {i + 1}</span>
                     </span>
                   </div>
                 ))}
@@ -262,7 +263,7 @@ export default function SimuladorSection() {
           {/* ── Panel 3: resumen ─────────────────────────────── */}
           <div className="flex flex-col gap-5">
             <div
-              className="rounded-3xl p-6"
+              className="rounded-3xl p-4 sm:p-6"
               style={{ background: "#ffffff", border: "1px solid #d2dcea", boxShadow: "0 1px 3px rgba(8,10,30,0.04), 0 8px 24px rgba(8,10,30,0.06)" }}
             >
               <p className="text-sm font-black mb-4" style={{ color: "#1c0f4c" }}>Resumen al vencimiento</p>

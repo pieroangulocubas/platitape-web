@@ -152,15 +152,15 @@ export default function TestimonialsSection() {
               style={{ background: `rgba(${t.accentRgb},0.06)`, border: `1px solid rgba(${t.accentRgb},0.18)`, transition: "background 0.5s, border-color 0.5s", minWidth: 0 }}
             >
               <div className="flex flex-col md:items-center md:text-center gap-1">
-                <p style={{ color: "rgba(15,10,46,0.38)", fontSize: "0.58rem", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", margin: 0 }}>
+                <p style={{ color: "rgba(15,10,46,0.4)", fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
                   Planea invertir
                 </p>
                 <p style={{ color: t.accent, fontSize: "1.7rem", fontWeight: 900, margin: 0, lineHeight: 1, transition: "color 0.5s" }}>
                   {t.planAmount}
                 </p>
-                <p style={{ color: "rgba(15,10,46,0.32)", fontSize: "0.65rem", margin: 0 }}>al lanzamiento</p>
+                <p style={{ color: "rgba(15,10,46,0.35)", fontSize: "0.72rem", margin: 0 }}>al lanzamiento</p>
               </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "5px 12px", borderRadius: "20px", background: `rgba(${t.accentRgb},0.10)`, border: `1px solid rgba(${t.accentRgb},0.25)`, fontSize: "0.62rem", fontWeight: 700, color: t.accent, whiteSpace: "nowrap" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "5px 12px", borderRadius: "20px", background: `rgba(${t.accentRgb},0.10)`, border: `1px solid rgba(${t.accentRgb},0.25)`, fontSize: "0.75rem", fontWeight: 700, color: t.accent, whiteSpace: "nowrap" }}>
                 <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: t.accent, boxShadow: `0 0 6px ${t.accent}`, animation: "pulse-dot 2s infinite", flexShrink: 0 }} />
                 En lista de espera
               </div>

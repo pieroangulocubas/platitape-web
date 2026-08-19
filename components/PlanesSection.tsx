@@ -156,7 +156,7 @@ export default function PlanesSection() {
                     Plan {tier.id}
                   </p>
                   <div
-                    className="inline-block mt-2 px-3 py-1 rounded-full text-[0.65rem] font-bold"
+                    className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold"
                     style={{ background: `${accent}15`, color: accent }}
                   >
                     Desde
@@ -181,7 +181,7 @@ export default function PlanesSection() {
                 </div>
 
                 <div
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.68rem] font-bold"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
                   style={{ background: `${accent}12`, border: `1px solid ${accent}35`, color: accent }}
                 >
                   <IconCalendarCheck color={accent} />

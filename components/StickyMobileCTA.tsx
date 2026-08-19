@@ -44,7 +44,7 @@ export default function StickyMobileCTA() {
           <span style={{ color: "#22d3ee", fontWeight: 900, fontSize: "0.95rem", lineHeight: 1 }}>
             {Math.round(MAX_RATE * 100)}%
           </span>
-          <span style={{ color: "rgba(34,211,238,0.6)", fontSize: "0.5rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          <span style={{ color: "rgba(34,211,238,0.65)", fontSize: "0.62rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>
             anual
           </span>
         </div>
