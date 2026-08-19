@@ -196,14 +196,14 @@ export default function FormSection() {
             style={{ color: "#1c0f4c" }}>
             <span style={{
               width: "6px", height: "6px", borderRadius: "50%",
-              background: "#22c55e", boxShadow: "0 0 6px #22c55e",
+              background: "#6cdcff", boxShadow: "0 0 6px #6cdcff",
               animation: "pulse-dot 1.5s infinite", flexShrink: 0,
             }} />
             Únete a la lista de espera
           </span>
           <h2 className="text-4xl md:text-5xl font-black mt-4 mb-3" style={{ color: "#1c0f4c" }}>
-            Únete a la{" "}
-            <span className="gradient-text">lista de inversionistas</span>
+            Únete a{" "}
+            <span className="gradient-text">inversionistas</span>
           </h2>
           <p className="text-base" style={{ color: "rgba(8,11,30,0.52)" }}>
             Sin compromiso. Te avisamos antes del lanzamiento y tendrás acceso prioritario.
@@ -306,7 +306,7 @@ export default function FormSection() {
                   <span>Enviando...</span>
                 </>
               ) : (
-                <span>Unirme a la lista de espera</span>
+                <span>Invertir</span>
               )}
             </button>
           </form>

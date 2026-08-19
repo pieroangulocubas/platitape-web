@@ -2,19 +2,12 @@
 import { useState } from "react";
 import ToastNotifications from "./ToastNotifications";
 import { WA_CHANNEL_URL } from "@/lib/config";
+import { getPlanForAmount, MIN_INVESTMENT, MAX_RATE } from "@/lib/plans";
 
-const ANNUAL_RATE  = 0.16;
-const MONTHLY_RATE = 0.013;
-const MIN_AMOUNT   = 10000;
+const MIN_AMOUNT   = MIN_INVESTMENT;
 const MAX_AMOUNT   = 1000000;
 
-const PERIODS = [
-  { months: 3,  label: "3m",  available: false },
-  { months: 6,  label: "6m",  available: false },
-  { months: 12, label: "12m", available: true  },
-  { months: 18, label: "18m", available: true  },
-  { months: 24, label: "24m", available: true  },
-];
+const PERIODS = [12, 18, 24];
 
 function fmt(n: number) {
   return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -22,14 +15,14 @@ function fmt(n: number) {
 
 export default function HeroSection() {
   const [showSim, setShowSim] = useState(false);
-  const [amount, setAmount]          = useState(10000);
-  const [rawInput, setRawInput]      = useState("10000");
+  const [amount, setAmount]          = useState(100000);
   const [months, setMonths]          = useState(12);
 
-  const earnings        = amount * ANNUAL_RATE * (months / 12);
-  const total           = amount + earnings;
-  const roiPct          = ((earnings / amount) * 100).toFixed(1);
-  const monthlyEarnings = amount * MONTHLY_RATE;
+  const plan             = getPlanForAmount(amount);
+  const earnings         = amount * plan.rate * (months / 12);
+  const total             = amount + earnings;
+  const monthlyEarnings   = (amount * plan.rate) / 12;
+  const sliderPct         = ((amount - MIN_AMOUNT) / (MAX_AMOUNT - MIN_AMOUNT)) * 100;
 
   return (
     <>
@@ -43,7 +36,7 @@ export default function HeroSection() {
       <div
         className="absolute inset-0 pointer-events-none hidden md:block"
         style={{
-          backgroundImage: "url('/llama-bg.jpeg')",
+          backgroundImage: "url('/llama-hero-bg.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -124,12 +117,36 @@ export default function HeroSection() {
         }}
       />
 
+      {/* Promo card — "GANA X% Anual", flotando sobre la foto de la llama (desktop) */}
+      <div
+        className="absolute z-10 hidden md:block"
+        style={{
+          right: "17%",
+          bottom: "9%",
+          width: "clamp(180px, 19vw, 230px)",
+          borderRadius: "16px",
+          padding: "16px 18px",
+          background: "linear-gradient(135deg, #bc45e9 0%, #8b2fc9 100%)",
+          boxShadow: "0 16px 40px rgba(139,47,201,0.38)",
+        }}
+      >
+        <p style={{ color: "rgba(255,255,255,0.78)", fontSize: "0.65rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 2px" }}>
+          Gana
+        </p>
+        <p style={{ color: "white", fontWeight: 900, fontSize: "1.6rem", margin: "0 0 4px", lineHeight: 1 }}>
+          {Math.round(MAX_RATE * 100)}% Anual
+        </p>
+        <p style={{ color: "rgba(255,255,255,0.88)", fontSize: "0.72rem", lineHeight: 1.35, margin: 0, fontWeight: 600 }}>
+          En todos nuestros proyectos inmobiliarios en Perú
+        </p>
+      </div>
+
       {/* ── Main two-column layout ── */}
       <div className="relative z-10 max-w-6xl mx-auto w-full px-5 py-8">
         <div className="flex flex-col md:flex-row items-stretch gap-6 md:gap-0">
 
           {/* LEFT — text */}
-          <div className="flex-1 flex flex-col justify-center gap-4 md:gap-5 md:pr-10 pb-6 md:pb-16">
+          <div className="flex-1 md:max-w-xl flex flex-col justify-center gap-4 md:gap-5 md:pr-10 pb-6 md:pb-16">
 
             {/* Badge */}
             <div
@@ -150,18 +167,96 @@ export default function HeroSection() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-[4.25rem] font-black leading-[1.02] tracking-tight" style={{ color: "#1c0f4c" }}>
-              Haz que tu platita
-              <br />
-              <span className="gradient-text-cyan">trabaje hasta 16%</span>
-              <br />
-              <span style={{ color: "rgba(8,11,30,0.80)", fontWeight: 800 }}>de retorno anual</span>
-            </h1>
+            <div>
+              <h1 className="text-4xl md:text-5xl lg:text-[3.75rem] font-black leading-[1.08] tracking-tight" style={{ color: "#1c0f4c" }}>
+                Bienvenido a <span className="gradient-text-cyan">Platita.pe</span>
+              </h1>
+              <p className="text-base md:text-lg font-bold mt-2" style={{ color: "rgba(28,15,76,0.55)" }}>
+                Inversiones que Dan Gusto
+              </p>
+            </div>
 
-            <p className="text-base md:text-lg leading-relaxed max-w-md" style={{ color: "rgba(8,11,30,0.54)" }}>
-              Desde <strong style={{ color: "#1c0f4c" }}>S/10,000</strong>, invierte en proyectos
-              inmobiliarios verificados con respaldo notarial. 100% online, sin trámites ni letras chicas.
-            </p>
+            {/* Promo card — mobile (sin foto de fondo, va inline) */}
+            <div
+              className="md:hidden w-fit rounded-2xl"
+              style={{
+                padding: "14px 18px",
+                background: "linear-gradient(135deg, #bc45e9 0%, #8b2fc9 100%)",
+                boxShadow: "0 10px 28px rgba(139,47,201,0.30)",
+              }}
+            >
+              <p style={{ color: "rgba(255,255,255,0.78)", fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 2px" }}>
+                Gana
+              </p>
+              <p style={{ color: "white", fontWeight: 900, fontSize: "1.35rem", margin: "0 0 3px", lineHeight: 1 }}>
+                {Math.round(MAX_RATE * 100)}% Anual
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.88)", fontSize: "0.68rem", lineHeight: 1.3, margin: 0, fontWeight: 600 }}>
+                En todos nuestros proyectos inmobiliarios en Perú
+              </p>
+            </div>
+
+            {/* Feature list */}
+            <div className="flex flex-col max-w-md">
+              {[
+                {
+                  icon: (
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                      <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                      <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+                    </svg>
+                  ),
+                  text: <>Invierte desde <span className="gradient-text-cyan font-extrabold">S/10,000</span></>,
+                },
+                {
+                  icon: (
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                      <polyline points="16 7 22 7 22 13" />
+                    </svg>
+                  ),
+                  text: <>Obtén <span className="gradient-text-cyan font-extrabold">ingresos mensuales</span></>,
+                },
+                {
+                  icon: (
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="19" y1="5" x2="5" y2="19" />
+                      <circle cx="6.5" cy="6.5" r="2.5" />
+                      <circle cx="17.5" cy="17.5" r="2.5" />
+                    </svg>
+                  ),
+                  text: <>Genera hasta un <span className="gradient-text-cyan font-extrabold">{Math.round(MAX_RATE * 100)}%</span> de rentabilidad anual</>,
+                },
+                {
+                  icon: (
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 9.5 12 3l9 6.5" />
+                      <path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10" />
+                    </svg>
+                  ),
+                  text: <>Con respaldo en <span className="gradient-text-cyan font-extrabold">proyectos inmobiliarios</span></>,
+                },
+              ].map((f, i, arr) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3.5 py-2.5"
+                  style={i < arr.length - 1 ? { borderBottom: "1px solid rgba(28,15,76,0.08)" } : undefined}
+                >
+                  <div
+                    className="flex items-center justify-center w-11 h-11 rounded-full shrink-0"
+                    style={{
+                      background: "linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #6cdcff, #bc45e9) border-box",
+                      border: "1.5px solid transparent",
+                      boxShadow: "0 2px 10px rgba(28,15,76,0.08)",
+                    }}
+                  >
+                    {f.icon}
+                  </div>
+                  <p className="text-base font-semibold" style={{ color: "rgba(8,11,30,0.78)" }}>{f.text}</p>
+                </div>
+              ))}
+            </div>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 items-start">
@@ -169,7 +264,7 @@ export default function HeroSection() {
                 href="#registro"
                 className="btn-gradient px-8 py-3.5 rounded-lg text-sm font-bold tracking-wide"
               >
-                <span>Unirse a la lista de espera →</span>
+                <span>Invierte Hoy</span>
               </a>
               <button
                 onClick={() => setShowSim((v) => !v)}
@@ -257,8 +352,8 @@ export default function HeroSection() {
       <div
         className="absolute bottom-0 left-0 w-full pointer-events-none hidden md:block"
         style={{
-          height: "140px",
-          background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.2) 40%, rgba(255,255,255,0.45) 58%, rgba(255,255,255,0.72) 74%, rgba(255,255,255,0.92) 88%, #ffffff 100%)",
+          height: "80px",
+          background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.2) 52%, rgba(255,255,255,0.45) 68%, rgba(255,255,255,0.72) 82%, rgba(255,255,255,0.92) 92%, #ffffff 100%)",
         }}
       />
     </section>
@@ -287,7 +382,7 @@ export default function HeroSection() {
       <div className="flex items-center justify-between p-5 pb-0">
         <div>
           <p className="font-black text-lg" style={{ color: "#1c0f4c" }}>Simulador de inversión</p>
-          <p className="text-xs font-medium" style={{ color: "rgba(8,11,30,0.45)" }}>Estimación al 16% anual</p>
+          <p className="text-xs font-medium" style={{ color: "rgba(8,11,30,0.45)" }}>Estimación al {Math.round(plan.rate * 100)}% anual · {plan.label}</p>
         </div>
         <button
           onClick={() => setShowSim(false)}
@@ -303,112 +398,90 @@ export default function HeroSection() {
 
         {/* ── Monto ── */}
         <div>
-          <div className="flex justify-between mb-2">
+          <div className="flex justify-between items-baseline mb-1">
             <span className="text-xs font-semibold" style={{ color: "rgba(8,11,30,0.50)" }}>Monto a invertir</span>
             <span className="text-xs" style={{ color: "rgba(8,11,30,0.35)" }}>mín. S/ 10,000</span>
           </div>
-          <div className="relative">
-            <span className="absolute top-1/2 -translate-y-1/2 left-4 font-black text-lg select-none pointer-events-none" style={{ color: "#bc45e9" }}>S/</span>
-            <input
-              type="number"
-              value={rawInput}
-              min={MIN_AMOUNT}
-              max={MAX_AMOUNT}
-              onChange={(e) => {
-                setRawInput(e.target.value);
-                const n = Number(e.target.value);
-                if (!isNaN(n) && n >= MIN_AMOUNT) setAmount(Math.min(MAX_AMOUNT, n));
-              }}
-              onBlur={() => {
-                const clamped = Math.min(MAX_AMOUNT, Math.max(MIN_AMOUNT, Number(rawInput) || MIN_AMOUNT));
-                setAmount(clamped); setRawInput(String(clamped));
-              }}
-              className="form-input-light text-xl"
-              style={{ paddingLeft: "3.5rem" }}
-            />
-          </div>
-          <div className="flex gap-2 mt-2.5 flex-wrap">
-            {[10000, 25000, 50000, 100000].map((v) => (
-              <button key={v} onClick={() => { setAmount(v); setRawInput(String(v)); }}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-                style={{
-                  background: amount === v ? "rgba(188,69,233,0.10)" : "#ffffff",
-                  border: amount === v ? "1.5px solid rgba(188,69,233,0.40)" : "1px solid #d2dcea",
-                  color: amount === v ? "#bc45e9" : "rgba(8,11,30,0.45)",
-                }}
-              >
-                S/{v >= 1000 ? `${v / 1000}k` : v}
-              </button>
-            ))}
+          <p key={`amt-${amount}`} className="text-2xl font-black sim-result-value" style={{ color: "#1c0f4c" }}>
+            S/ {fmt(amount)}
+          </p>
+          <input
+            type="range"
+            min={MIN_AMOUNT}
+            max={MAX_AMOUNT}
+            step={1000}
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="w-full mt-2"
+            style={{
+              accentColor: "#bc45e9",
+              height: "6px",
+              borderRadius: "99px",
+              background: `linear-gradient(90deg, #6cdcff 0%, #bc45e9 ${sliderPct}%, #e8edf6 ${sliderPct}%, #e8edf6 100%)`,
+            }}
+          />
+          <div className="flex justify-between mt-1.5 text-[0.62rem] font-semibold" style={{ color: "rgba(8,11,30,0.35)" }}>
+            <span>S/10K</span>
+            <span>S/100K</span>
+            <span>S/500K+</span>
           </div>
         </div>
 
         {/* ── Período ── */}
         <div>
           <span className="text-xs font-semibold mb-2 block" style={{ color: "rgba(8,11,30,0.50)" }}>Período de inversión</span>
-          <div className="grid grid-cols-5 gap-1.5">
-            {PERIODS.map((p) => (
-              <div key={p.months} className="relative">
-                <button
-                  onClick={() => p.available && setMonths(p.months)}
-                  className="w-full py-2.5 rounded-lg text-xs font-bold transition-all"
-                  style={{
-                    background: !p.available
-                      ? "rgba(12,18,55,0.03)"
-                      : months === p.months
-                        ? "linear-gradient(135deg, #6cdcff, #bc45e9)"
-                        : "#ffffff",
-                    border: !p.available
-                      ? "1px solid rgba(12,18,55,0.06)"
-                      : months === p.months
-                        ? "none"
-                        : "1px solid #d2dcea",
-                    color: !p.available
-                      ? "rgba(8,11,30,0.22)"
-                      : months === p.months
-                        ? "white"
-                        : "rgba(8,11,30,0.55)",
-                    boxShadow: p.available && months === p.months ? "0 4px 16px rgba(188,69,233,0.28)" : "none",
-                    cursor: p.available ? "pointer" : "default",
-                  }}
-                >{p.label}</button>
-                {!p.available && <span className="absolute top-0.5 right-0.5 text-[9px] opacity-30 pointer-events-none select-none">🔒</span>}
-              </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {PERIODS.map((m) => (
+              <button
+                key={m}
+                onClick={() => setMonths(m)}
+                className="py-2.5 rounded-lg text-xs font-bold transition-all"
+                style={{
+                  background: months === m ? "linear-gradient(135deg, #6cdcff, #bc45e9)" : "#ffffff",
+                  border: months === m ? "none" : "1px solid #d2dcea",
+                  color: months === m ? "white" : "rgba(8,11,30,0.55)",
+                  boxShadow: months === m ? "0 4px 16px rgba(188,69,233,0.28)" : "none",
+                }}
+              >
+                {m} meses
+              </button>
             ))}
           </div>
         </div>
 
-        {/* ── Resultados ── */}
-        <div className="rounded-xl p-5 relative overflow-hidden"
-          style={{ background: "#ffffff", border: "1.5px solid #d2dcea", boxShadow: "0 2px 12px rgba(8,10,30,0.06)" }}
-        >
-          {/* mini borde animado en el card de resultado */}
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, #6cdcff 0%, #bc45e9 50%, #6cdcff 100%)", backgroundSize: "200% 100%", animation: "border-sweep-ltr 2.8s ease-in-out infinite" }} />
-          <div className="space-y-3.5 pt-1">
-            <div className="flex justify-between items-center">
-              <span className="text-sm" style={{ color: "rgba(8,11,30,0.45)" }}>Tu inversión</span>
-              <span key={`inv-${amount}`} className="text-xl font-black sim-result-value" style={{ color: "#1c0f4c" }}>S/ {fmt(amount)}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold" style={{ color: "#bc45e9" }}>Ganancia estimada</span>
-              <div className="text-right">
-                <span key={`earn-${amount}-${months}`} className="text-xl font-black sim-result-value block" style={{ color: "#bc45e9" }}>+S/ {fmt(earnings)}</span>
-                <span className="text-xs" style={{ color: "rgba(188,69,233,0.60)" }}>{roiPct}% en {months} meses</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-semibold" style={{ color: "#bc45e9" }}>Ganancia mensual (retiro)</span>
-              <div className="text-right">
-                <span key={`month-${amount}`} className="text-xl font-black sim-result-value block" style={{ color: "#bc45e9" }}>+S/ {fmt(monthlyEarnings)}</span>
-                <span className="text-xs" style={{ color: "rgba(188,69,233,0.60)" }}>1.3% mensual sobre tu inversión</span>
-              </div>
-            </div>
-            <div className="h-px" style={{ background: "#e8eef6" }} />
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-bold" style={{ color: "#1c0f4c" }}>Total al final</span>
-              <span key={`total-${amount}-${months}`} className="text-2xl font-black sim-result-value" style={{ color: "#1c0f4c" }}>S/ {fmt(total)}</span>
-            </div>
+        {/* ── Resultados — cards sintetizados al estilo del simulador completo ── */}
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className="rounded-xl p-3" style={{ background: "#f5f3fc" }}>
+            <p className="text-[0.62rem] font-semibold" style={{ color: "rgba(8,11,30,0.45)" }}>Tu plan</p>
+            <p className="text-base font-black mt-0.5" style={{ color: "#bc45e9" }}>Hasta {Math.round(plan.rate * 100)}%</p>
           </div>
+          <div className="rounded-xl p-3" style={{ background: "rgba(108,220,255,0.12)" }}>
+            <p className="text-[0.62rem] font-semibold" style={{ color: "rgba(8,11,30,0.45)" }}>Ingreso mensual</p>
+            <p key={`month-${amount}`} className="text-base font-black mt-0.5 sim-result-value" style={{ color: "#0097b2" }}>+S/ {fmt(monthlyEarnings)}</p>
+          </div>
+          <div className="rounded-xl p-3" style={{ background: "rgba(34,197,94,0.09)" }}>
+            <p className="text-[0.62rem] font-semibold" style={{ color: "rgba(8,11,30,0.45)" }}>
+              {months === 12 ? "Rentabilidad anual" : "Rentabilidad total"}
+            </p>
+            <p key={`earn-${amount}-${months}`} className="text-base font-black mt-0.5 sim-result-value" style={{ color: "#16a34a" }}>+S/ {fmt(earnings)}</p>
+          </div>
+          <div className="rounded-xl p-3" style={{ background: "rgba(188,69,233,0.08)" }}>
+            <p className="text-[0.62rem] font-semibold" style={{ color: "rgba(8,11,30,0.45)" }}>Inversión</p>
+            <p key={`inv-${amount}`} className="text-base font-black mt-0.5 sim-result-value" style={{ color: "#1c0f4c" }}>S/ {fmt(amount)}</p>
+          </div>
+        </div>
+
+        {/* ── Total al final — card destacado ── */}
+        <div className="rounded-xl p-5 relative overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #2d1a6e 0%, #1c0f4c 100%)" }}
+        >
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, #6cdcff 0%, #bc45e9 50%, #6cdcff 100%)", backgroundSize: "200% 100%", animation: "border-sweep-ltr 2.8s ease-in-out infinite" }} />
+          <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: "rgba(255,255,255,0.55)" }}>
+            Total al final · {months} meses
+          </p>
+          <p key={`total-${amount}-${months}`} className="font-black text-white mt-1 sim-result-value" style={{ fontSize: "2rem", lineHeight: 1.1 }}>
+            S/ {fmt(total)}
+          </p>
         </div>
 
         {/* Disclaimer */}
@@ -417,7 +490,8 @@ export default function HeroSection() {
             <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
           <p className="text-xs" style={{ color: "rgba(8,11,30,0.42)" }}>
-            Proyección referencial al 16% anual. Respaldo legal: Contrato mutuo.
+            Proyección referencial al {Math.round(plan.rate * 100)}% anual ({plan.label}). Si incrementas tu monto y subes de categoría,
+            tu saldo se consolida en un nuevo contrato de 12 meses. Respaldo legal: Contrato mutuo.
           </p>
         </div>
 

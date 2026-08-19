@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { MAX_RATE } from "@/lib/plans";
 
 export default function StickyMobileCTA() {
   const [visible, setVisible] = useState(false);
@@ -41,7 +42,7 @@ export default function StickyMobileCTA() {
           }}
         >
           <span style={{ color: "#22d3ee", fontWeight: 900, fontSize: "0.95rem", lineHeight: 1 }}>
-            16%
+            {Math.round(MAX_RATE * 100)}%
           </span>
           <span style={{ color: "rgba(34,211,238,0.6)", fontSize: "0.5rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
             anual

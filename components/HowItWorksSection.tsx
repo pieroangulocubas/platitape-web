@@ -1,6 +1,8 @@
 ﻿"use client";
 import Image from "next/image";
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useState } from "react";
+
+const YOUTUBE_VIDEO_ID = "reGTlUyOei0";
 
 /* ── icons ── */
 const IconUserCheck = ({ c }: { c: string }) => (
@@ -76,7 +78,6 @@ const steps: Step[] = [
 
 export default function HowItWorksSection() {
   const [active, setActive] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <section id="como-funciona" className="py-14 md:py-24 px-4" style={{ background: "#ffffff" }}>
@@ -109,19 +110,19 @@ export default function HowItWorksSection() {
               boxShadow: "0 24px 80px rgba(28,15,76,0.16), 0 4px 20px rgba(28,15,76,0.08)",
             }}
           >
-            <video
-              ref={videoRef}
-              src="/platita-vsl.mp4"
-              controls
-              playsInline
-              className="absolute inset-0 w-full h-full"
-              style={{ display: active ? "block" : "none" }}
-            />
-
-            {!active && (
+            {active ? (
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`}
+                title="Video Platita.pe"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+                style={{ border: "none" }}
+              />
+            ) : (
               <div
                 className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                onClick={() => { setActive(true); setTimeout(() => videoRef.current?.play(), 50); }}
+                onClick={() => setActive(true)}
               >
                 {/* Thumbnail image — sin overlay, máxima nitidez */}
                 <Image

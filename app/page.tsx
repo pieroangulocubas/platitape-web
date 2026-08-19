@@ -6,6 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import { RespaldoLegalBand, SociosEstrategicosBand } from "@/components/LegalTicker";
 import Navbar from "@/components/Navbar";
+import PlanesSection from "@/components/PlanesSection";
 import ProyectosSection from "@/components/ProyectosSection";
 import SimuladorSection from "@/components/SimuladorSection";
 import StatsSection from "@/components/StatsSection";
@@ -24,6 +25,7 @@ export default function Home() {
         <HowItWorksSection />
         <FormSection />
         <ComparativoSection />
+        <PlanesSection />
         <ProyectosSection />
         <SociosEstrategicosBand />
         <AppPreviewSection />

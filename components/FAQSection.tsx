@@ -14,8 +14,8 @@ const faqs = [
     cat: "Riesgos",
   },
   {
-    q: "¿El 16% anual está garantizado?",
-    a: "El 16% es la rentabilidad estimada máxima basada en el historial de nuestros proyectos. La tasa real varía entre 10% y 16% según el proyecto y el plazo elegido. Como toda inversión, está sujeta a riesgos del mercado inmobiliario. Nunca prometemos rendimientos garantizados, pero sí transparencia total en cada paso.",
+    q: "¿El 20% anual está garantizado?",
+    a: "20% es la rentabilidad máxima, correspondiente al plan de mayor categoría (desde S/500,000). La tasa real va del 14% al 20% anual según el monto invertido y el plazo elegido — mira los Planes de inversión para ver el detalle por categoría. Como toda inversión, está sujeta a riesgos del mercado inmobiliario. Nunca prometemos rendimientos garantizados, pero sí transparencia total en cada paso.",
     cat: "Rentabilidad",
   },
   {

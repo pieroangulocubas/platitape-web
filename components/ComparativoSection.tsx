@@ -1,18 +1,22 @@
+import Image from "next/image";
+
 const rows = [
   {
     label: "Rentabilidad anual",
     banco: "3% – 5%",
-    afp: "5% – 7%",
-    inmueble: "6% – 9%",
-    platita: "16% anual",
+    cajas: "4% – 6%",
+    fondos: "5% – 10%",
+    acciones: "6% – 12%*",
+    platita: "14% – 20% anual",
     icon: "trending",
     accent: "#bc45e9",
   },
   {
     label: "Inversión mínima",
     banco: "S/ 1,000+",
-    afp: "Descuento mensual",
-    inmueble: "S/ 200,000+",
+    cajas: "S/ 500+",
+    fondos: "S/ 5,000+",
+    acciones: "S/ 100+",
     platita: "S/ 10,000",
     icon: "coins",
     accent: "#6cdcff",
@@ -20,8 +24,9 @@ const rows = [
   {
     label: "Respaldo del capital",
     banco: "Fondo de seguro",
-    afp: "Fondo colectivo",
-    inmueble: "Propiedad",
+    cajas: "Fondo de seguro limitado",
+    fondos: "Patrimonio del fondo (no asegurado)",
+    acciones: "No hay respaldo del capital",
     platita: "Activo inmobiliario",
     icon: "shield",
     accent: "#bc45e9",
@@ -29,8 +34,9 @@ const rows = [
   {
     label: "Proceso",
     banco: "Colas presenciales",
-    afp: "Colas presenciales",
-    inmueble: "Notaría + bancos",
+    cajas: "Colas presenciales",
+    fondos: "A través de intermediarios",
+    acciones: "Plataformas de bolsa",
     platita: "100% online · 5 min",
     icon: "zap",
     accent: "#6cdcff",
@@ -38,8 +44,9 @@ const rows = [
   {
     label: "Gestión del activo",
     banco: "N/A",
-    afp: "Administradora",
-    inmueble: "Tú mismo",
+    cajas: "N/A",
+    fondos: "Administradora del fondo",
+    acciones: "Tú mismo",
     platita: "Nosotros lo hacemos",
     icon: "gear",
     accent: "#bc45e9",
@@ -47,22 +54,34 @@ const rows = [
   {
     label: "Comisiones de entrada",
     banco: "Varía",
-    afp: "% del aporte",
-    inmueble: "3% – 5% + notaría",
+    cajas: "Varía",
+    fondos: "1% – 3% anual + comisiones",
+    acciones: "0.1% – 0.5% por operación",
     platita: "S/ 0",
     icon: "tag",
     accent: "#6cdcff",
+  },
+  {
+    label: "Ingresos",
+    banco: "Al vencimiento",
+    cajas: "Al vencimiento",
+    fondos: "Al rescate",
+    acciones: "Al vender",
+    platita: "Mensuales",
+    icon: "wallet",
+    accent: "#bc45e9",
   },
 ];
 
 const cols = [
   { key: "banco", label: "Banco" },
-  { key: "afp", label: "AFP" },
-  { key: "inmueble", label: "Inmueble directo" },
+  { key: "cajas", label: "Cajas" },
+  { key: "fondos", label: "Fondos" },
+  { key: "acciones", label: "Acciones" },
 ] as const;
 
 const ROW_H = 68;
-const HEAD_H = 104;
+const HEAD_H = 140;
 
 function RowIcon({ name, color }: { name: string; color: string }) {
   const common = {
@@ -117,53 +136,30 @@ function RowIcon({ name, color }: { name: string; color: string }) {
           <line x1="7" y1="7" x2="7.01" y2="7" />
         </svg>
       );
+    case "wallet":
+      return (
+        <svg {...common}>
+          <path d="M3 7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1h-2a3 3 0 0 0 0 6h2v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+          <circle cx="16" cy="12" r="1" fill={color} stroke="none" />
+        </svg>
+      );
     default:
       return null;
   }
 }
 
 function ColIcon({ name }: { name: string }) {
-  const common = {
-    width: 16,
-    height: 16,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "rgba(255,255,255,0.55)",
-    strokeWidth: 2,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
+  const src: Record<string, string> = {
+    banco: "/icons/banco-norm.png",
+    cajas: "/icons/cajas-norm.png",
+    fondos: "/icons/fondos-norm.png",
+    acciones: "/icons/acciones-norm.png",
   };
-  switch (name) {
-    case "banco":
-      return (
-        <svg {...common}>
-          <line x1="3" y1="21" x2="21" y2="21" />
-          <line x1="5" y1="21" x2="5" y2="10" />
-          <line x1="19" y1="21" x2="19" y2="10" />
-          <line x1="12" y1="21" x2="12" y2="10" />
-          <polygon points="12 3 21 8 3 8" />
-        </svg>
-      );
-    case "afp":
-      return (
-        <svg {...common}>
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      );
-    case "inmueble":
-      return (
-        <svg {...common}>
-          <path d="M3 9.5 12 3l9 6.5" />
-          <path d="M5 9.5V21h14V9.5" />
-          <path d="M9 21v-6h6v6" />
-        </svg>
-      );
-    default:
-      return null;
-  }
+  return (
+    <div style={{ position: "relative", width: 52, height: 52 }}>
+      <Image src={src[name]} alt="" fill sizes="52px" style={{ objectFit: "contain" }} />
+    </div>
+  );
 }
 
 export default function ComparativoSection() {
@@ -221,7 +217,7 @@ export default function ComparativoSection() {
 
         {/* Comparison — desktop / tablet: side-by-side cards, no scroll */}
         <div className="hidden md:flex items-stretch" style={{ gap: "12px" }} data-reveal>
-          {/* Base card — Label + Banco + AFP + Inmueble */}
+          {/* Base card — Label + Banco + Cajas + Fondos + Acciones */}
           <div
             className="flex-1 rounded-3xl overflow-hidden"
             style={{
@@ -231,8 +227,15 @@ export default function ComparativoSection() {
             }}
           >
             {/* Head row */}
-            <div className="grid" style={{ gridTemplateColumns: "0.85fr 1fr 1fr 1fr", background: "#1c0f4c" }}>
-              <div style={{ minHeight: HEAD_H }} />
+            <div className="grid" style={{ gridTemplateColumns: "0.85fr 1fr 1fr 1fr 1fr", background: "#1c0f4c" }}>
+              <div className="flex flex-col items-center justify-center gap-1.5 text-center px-2" style={{ minHeight: HEAD_H }}>
+                <div style={{ position: "relative", width: 52, height: 52 }}>
+                  <Image src="/icons/informacion-norm.png" alt="" fill sizes="52px" style={{ objectFit: "contain" }} />
+                </div>
+                <span className="text-xs font-bold tracking-wide" style={{ color: "rgba(255,255,255,0.75)" }}>
+                  Información
+                </span>
+              </div>
               {cols.map((col) => (
                 <div
                   key={col.key}
@@ -256,7 +259,7 @@ export default function ComparativoSection() {
                 key={row.label}
                 className="grid transition-colors duration-200 hover:bg-[rgba(188,69,233,0.03)]"
                 style={{
-                  gridTemplateColumns: "0.85fr 1fr 1fr 1fr",
+                  gridTemplateColumns: "0.85fr 1fr 1fr 1fr 1fr",
                   background: ri % 2 === 1 ? "rgba(28,15,76,0.025)" : "transparent",
                   borderTop: "1px solid rgba(28,15,76,0.06)",
                 }}
@@ -306,12 +309,12 @@ export default function ComparativoSection() {
               style={{ minHeight: HEAD_H, background: "rgba(255,255,255,0.08)" }}
             >
               <div
-                className="text-[0.55rem] font-black tracking-widest uppercase px-2.5 py-1 rounded-full"
-                style={{ background: "rgba(255,255,255,0.22)", color: "#ffffff" }}
+                className="rounded-full overflow-hidden relative shrink-0"
+                style={{ width: 54, height: 54, background: "#1c0f4c", boxShadow: "0 2px 8px rgba(28,15,76,0.25)" }}
               >
-                ★ Recomendado
+                <Image src="/isotipo.png" alt="" fill sizes="54px" style={{ objectFit: "cover", objectPosition: "left center" }} />
               </div>
-              <span className="text-sm font-black text-white">Platita.pe</span>
+              <span className="text-sm font-black text-white">platita.pe</span>
             </div>
 
             {/* Body cells */}
@@ -357,34 +360,34 @@ export default function ComparativoSection() {
                   {row.label}
                 </span>
               </div>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 gap-1.5 mb-1.5">
                 {cols.map((col) => (
                   <div
                     key={col.key}
-                    className="rounded-xl px-1 py-2 text-center"
+                    className="rounded-xl px-2 py-2 text-center"
                     style={{ background: "rgba(28,15,76,0.03)" }}
                   >
                     <div
                       className="text-[0.55rem] font-bold uppercase tracking-wide mb-1"
                       style={{ color: "rgba(15,10,46,0.35)" }}
                     >
-                      {col.label === "Inmueble directo" ? "Inmueble" : col.label}
+                      {col.label}
                     </div>
                     <div className="text-[0.68rem] font-bold leading-tight" style={{ color: "rgba(15,10,46,0.55)" }}>
                       {row[col.key]}
                     </div>
                   </div>
                 ))}
-                <div
-                  className="rounded-xl px-1 py-2 text-center"
-                  style={{ background: "linear-gradient(160deg, #6cdcff 0%, #bc45e9 65%, #a233d4 100%)" }}
-                >
-                  <div className="text-[0.55rem] font-black uppercase tracking-wide mb-1" style={{ color: "rgba(255,255,255,0.85)" }}>
-                    Platita
-                  </div>
-                  <div className="text-[0.68rem] font-black leading-tight text-white">
-                    {row.platita}
-                  </div>
+              </div>
+              <div
+                className="rounded-xl px-2 py-2 text-center flex items-center justify-center gap-2"
+                style={{ background: "linear-gradient(160deg, #6cdcff 0%, #bc45e9 65%, #a233d4 100%)" }}
+              >
+                <div className="text-[0.55rem] font-black uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  platita.pe
+                </div>
+                <div className="text-[0.68rem] font-black leading-tight text-white">
+                  {row.platita}
                 </div>
               </div>
             </div>

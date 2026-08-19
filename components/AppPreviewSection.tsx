@@ -1,5 +1,6 @@
 ﻿"use client";
 import Image from "next/image";
+import { MAX_RATE } from "@/lib/plans";
 /** App Preview — phone mockup centrado, dominante, con toasts flotantes descriptivos */
 
 const miniProjects = [
@@ -41,52 +42,71 @@ function PhoneMockup() {
   return (
     <div
       style={{
-        width: "280px",
+        width: "300px",
         borderRadius: "38px",
         background: "#0a0818",
-        border: "1.5px solid rgba(255,255,255,0.10)",
+        border: "1.5px solid rgba(255,255,255,0.12)",
+        padding: "6px",
         boxShadow:
           "0 48px 96px rgba(28,15,76,0.35), 0 0 0 1px rgba(255,255,255,0.03), inset 0 0 0 1px rgba(255,255,255,0.05)",
-        overflow: "hidden",
         position: "relative",
         flexShrink: 0,
       }}
     >
-      {/* Status bar / notch */}
-      <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 0" }}>
-        <div style={{ width: "84px", height: "22px", background: "#000", borderRadius: "11px" }} />
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 20px", fontSize: "0.58rem", color: "rgba(255,255,255,0.35)" }}>
-        <span>9:41</span><span>●●●  100%</span>
-      </div>
+      {/* Botones laterales */}
+      <div style={{ position: "absolute", left: "-1.5px", top: "108px", width: "1.5px", height: "28px", background: "rgba(255,255,255,0.14)", borderRadius: "2px 0 0 2px" }} />
+      <div style={{ position: "absolute", left: "-1.5px", top: "148px", width: "1.5px", height: "50px", background: "rgba(255,255,255,0.14)", borderRadius: "2px 0 0 2px" }} />
+      <div style={{ position: "absolute", right: "-1.5px", top: "130px", width: "1.5px", height: "62px", background: "rgba(255,255,255,0.14)", borderRadius: "0 2px 2px 0" }} />
 
-      {/* Screen content — fondo claro, como la app real */}
-      <div style={{ background: "#f7f8fc", padding: "12px 14px 14px" }}>
-
-        {/* Header: avatar + wordmark */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-          <div style={{ width: "26px", height: "26px", borderRadius: "50%", overflow: "hidden", position: "relative", flexShrink: 0, background: "#1c0f4c" }}>
-            <Image src="/isotipo.png" alt="" fill sizes="26px" style={{ objectFit: "cover", objectPosition: "left center" }} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: "0.8rem", color: "#1c0f4c" }}>
-            platita<span style={{ color: "#bc45e9" }}>.pe</span>
-          </span>
+      <div style={{ borderRadius: "33px", overflow: "hidden", position: "relative" }}>
+        {/* Status bar / notch */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 0", position: "relative", zIndex: 3 }}>
+          <div style={{ width: "84px", height: "22px", background: "#000", borderRadius: "11px" }} />
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 20px", fontSize: "0.58rem", color: "rgba(255,255,255,0.35)", position: "relative", zIndex: 3 }}>
+          <span>9:41</span><span>●●●  100%</span>
         </div>
 
-        {/* Bienvenida */}
-        <p style={{ fontWeight: 900, fontSize: "1.05rem", lineHeight: 1.15, color: "#0f0a2e", margin: "0 0 2px" }}>
-          Bienvenido a<br />platita.pe
-        </p>
-        <p style={{ fontSize: "0.6rem", color: "rgba(15,10,46,0.42)", margin: "0 0 10px", fontWeight: 600 }}>
-          Inversiones que Dan Gusto
-        </p>
+        {/* Screen content — fondo claro, como la app real */}
+        <div style={{ background: "#f7f8fc", padding: "12px 14px 14px", position: "relative", overflow: "hidden" }}>
 
-        {/* Promo card */}
-        <div style={{ borderRadius: "14px", padding: "12px 14px", marginBottom: "12px", background: "linear-gradient(135deg, #bc45e9 0%, #8b2fc9 100%)" }}>
-          <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.55rem", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 1px" }}>Gana</p>
-          <p style={{ color: "white", fontWeight: 900, fontSize: "1.4rem", margin: "0 0 4px", lineHeight: 1 }}>16% Anual</p>
-          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.58rem", lineHeight: 1.3, margin: 0, fontWeight: 600 }}>
-            En todos nuestros proyectos inmobiliarios en Perú
+          {/* Llama superhéroe — asoma en la esquina superior derecha, por encima del texto, sin fondo */}
+          <div style={{ position: "absolute", top: "-4px", right: "-6px", width: "46%", aspectRatio: "615 / 943", zIndex: 5, pointerEvents: "none" }}>
+            <Image
+              src="/llama-cutout.png"
+              alt=""
+              fill
+              sizes="170px"
+              style={{ objectFit: "contain", objectPosition: "center top" }}
+            />
+          </div>
+
+          {/* Header: avatar + wordmark */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px", position: "relative", zIndex: 2 }}>
+            <div style={{ width: "26px", height: "26px", borderRadius: "50%", overflow: "hidden", position: "relative", flexShrink: 0, background: "#1c0f4c" }}>
+              <Image src="/isotipo.png" alt="" fill sizes="26px" style={{ objectFit: "cover", objectPosition: "left center" }} />
+            </div>
+            <span style={{ fontWeight: 800, fontSize: "0.8rem", color: "#1c0f4c" }}>
+              platita<span style={{ color: "#bc45e9" }}>.pe</span>
+            </span>
+          </div>
+
+          {/* Bienvenida */}
+          <div style={{ position: "relative", zIndex: 2, maxWidth: "62%" }}>
+            <p style={{ fontWeight: 900, fontSize: "1.05rem", lineHeight: 1.15, color: "#0f0a2e", margin: "0 0 2px" }}>
+              Bienvenido a<br />platita.pe
+            </p>
+            <p style={{ fontSize: "0.6rem", color: "rgba(15,10,46,0.42)", margin: "0 0 10px", fontWeight: 600 }}>
+              Inversiones que Dan Gusto
+            </p>
+          </div>
+
+          {/* Promo card */}
+          <div style={{ borderRadius: "14px", padding: "12px 14px", marginBottom: "12px", maxWidth: "64%", background: "linear-gradient(135deg, #bc45e9 0%, #8b2fc9 100%)", position: "relative", zIndex: 2 }}>
+            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.55rem", fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 1px" }}>Gana</p>
+            <p style={{ color: "white", fontWeight: 900, fontSize: "1.4rem", margin: "0 0 4px", lineHeight: 1 }}>{Math.round(MAX_RATE * 100)}% Anual</p>
+            <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.58rem", lineHeight: 1.3, margin: 0, fontWeight: 600 }}>
+              En todos nuestros proyectos inmobiliarios en Perú
           </p>
         </div>
 
@@ -147,6 +167,7 @@ function PhoneMockup() {
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );

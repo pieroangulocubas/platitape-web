@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { MAX_RATE } from "@/lib/plans";
 
 const IconPercent = ({ c }: { c: string }) => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -52,8 +53,8 @@ function useCountUp(end: number, duration: number, trigger: boolean) {
 
 const stats = [
   {
-    raw: 16, prefix: "", suffix: "%", label: "Rentabilidad anual",
-    detail: "Rentabilidad objetivo anual",
+    raw: Math.round(MAX_RATE * 100), prefix: "Hasta ", suffix: "%", label: "Rentabilidad anual",
+    detail: "Según tu categoría de inversión",
     icon: <IconPercent c="#ffffff" />,
     gradient: "linear-gradient(135deg, #7fe3ff 0%, #4bc4ef 100%)",
     delay: 0,
