@@ -1,73 +1,180 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 
-const USERS = [
-  { initials: "JL", name: "José L.",    city: "Lima",      gradient: "linear-gradient(135deg,#8b5cf6,#ec4899)" },
-  { initials: "CM", name: "Carlos M.",  city: "Arequipa",  gradient: "linear-gradient(135deg,#22d3ee,#8b5cf6)" },
-  { initials: "LR", name: "Lucía R.",   city: "Trujillo",  gradient: "linear-gradient(135deg,#ec4899,#f97316)" },
-  { initials: "AT", name: "Ana T.",     city: "Chiclayo",  gradient: "linear-gradient(135deg,#06b6d4,#8b5cf6)" },
-  { initials: "MP", name: "Miguel P.",  city: "Cusco",     gradient: "linear-gradient(135deg,#8b5cf6,#22d3ee)" },
-  { initials: "SR", name: "Sara R.",    city: "Piura",     gradient: "linear-gradient(135deg,#f97316,#ec4899)" },
-  { initials: "DV", name: "Diego V.",   city: "Iquitos",   gradient: "linear-gradient(135deg,#22d3ee,#06b6d4)" },
-  { initials: "MG", name: "María G.",   city: "Huancayo",  gradient: "linear-gradient(135deg,#a855f7,#ec4899)" },
-  { initials: "RQ", name: "Roberto Q.", city: "Tacna",     gradient: "linear-gradient(135deg,#22d3ee,#8b5cf6)" },
-  { initials: "KF", name: "Karen F.",   city: "Ica",       gradient: "linear-gradient(135deg,#ec4899,#8b5cf6)" },
+/* ── Personas (pool amplio, se barajan sin repetir) ────────────── */
+const GRADIENTS = [
+  "linear-gradient(135deg,#8b5cf6,#ec4899)",
+  "linear-gradient(135deg,#22d3ee,#8b5cf6)",
+  "linear-gradient(135deg,#ec4899,#f97316)",
+  "linear-gradient(135deg,#06b6d4,#8b5cf6)",
+  "linear-gradient(135deg,#a855f7,#22d3ee)",
+  "linear-gradient(135deg,#f97316,#ec4899)",
+  "linear-gradient(135deg,#22d3ee,#06b6d4)",
 ];
 
-const ACTIONS = [
-  "se unió a la lista de espera",
-  "reservó su lugar",
-  "quiere invertir desde S/10,000",
-  "acaba de registrarse",
-  "guardó su lugar prioritario",
+const RAW_USERS: [string, string, string][] = [
+  ["JL", "José L.", "Lima"],
+  ["CM", "Carlos M.", "Arequipa"],
+  ["LR", "Lucía R.", "Trujillo"],
+  ["AT", "Ana T.", "Chiclayo"],
+  ["MP", "Miguel P.", "Cusco"],
+  ["SR", "Sara R.", "Piura"],
+  ["DV", "Diego V.", "Iquitos"],
+  ["MG", "María G.", "Huancayo"],
+  ["RQ", "Roberto Q.", "Tacna"],
+  ["KF", "Karen F.", "Ica"],
+  ["JV", "Javier V.", "San Miguel, Lima"],
+  ["PC", "Paola C.", "Surco, Lima"],
+  ["FR", "Fernando R.", "Cajamarca"],
+  ["NL", "Noelia L.", "Huánuco"],
+  ["GS", "Gonzalo S.", "Pucallpa"],
+  ["BM", "Brenda M.", "Tarapoto"],
+  ["EC", "Enzo C.", "Juliaca"],
+  ["VH", "Valeria H.", "Chimbote"],
+  ["RA", "Renzo A.", "Los Olivos, Lima"],
+  ["CT", "Camila T.", "Ayacucho"],
+  ["HL", "Hugo L.", "Puno"],
+  ["MI", "Micaela I.", "Barranco, Lima"],
+  ["LS", "Luis S.", "Sullana"],
+  ["DR", "Daniela R.", "Moquegua"],
+  ["AF", "Andrés F.", "Jesús María, Lima"],
+  ["TM", "Tania M.", "Huaraz"],
+];
+
+const USERS = RAW_USERS.map(([initials, name, city], i) => ({
+  initials,
+  name,
+  city,
+  gradient: GRADIENTS[i % GRADIENTS.length],
+}));
+
+/* ── Eventos (variados, algunos con datos dinámicos) ───────────── */
+const AMOUNTS = [10000, 12000, 15000, 20000, 25000, 30000, 40000, 50000];
+const MONTHS = [12, 18, 24];
+const soles = (n: number) => "S/ " + n.toLocaleString("es-PE");
+const pick = <T,>(arr: readonly T[]) => arr[Math.floor(Math.random() * arr.length)];
+
+const EVENT_TEMPLATES: Array<() => string> = [
+  () => "se unió a la lista de espera",
+  () => "reservó su lugar prioritario",
+  () => "acaba de registrarse",
+  () => "completó su registro",
+  () => "guardó su cupo de pre-lanzamiento",
+  () => `simuló una inversión de ${soles(pick(AMOUNTS))}`,
+  () => `calculó su rentabilidad a ${pick(MONTHS)} meses`,
+  () => `quiere invertir ${soles(pick(AMOUNTS))} al lanzamiento`,
+  () => "revisó los planes de inversión",
+  () => "está viendo los proyectos disponibles",
+  () => "se unió al canal de WhatsApp",
+  () => "comparó Platita.pe con su banco",
+  () => "pidió más información",
+  () => "compartió Platita.pe",
 ];
 
 interface ToastItem {
   id: number;
-  user: typeof USERS[number];
+  user: (typeof USERS)[number];
   action: string;
   entering: boolean;
 }
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function ToastNotifications() {
   const [toast, setToast] = useState<ToastItem | null>(null);
-  const indexRef = useRef(0);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const nextTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const [reduced, setReduced] = useState(false);
 
-  const showToast = useCallback(() => {
-    const user   = USERS[indexRef.current % USERS.length];
-    const action = ACTIONS[Math.floor(Math.random() * ACTIONS.length)];
-    indexRef.current++;
+  const deckRef = useRef<number[]>([]);
+  const lastUserRef = useRef<number>(-1);
+  const lastActionRef = useRef<string>("");
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-    const id = Date.now();
+  const clearAll = () => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  };
 
-    // Mount with entering=true so CSS picks up the enter state
-    setToast({ id, user, action, entering: true });
-
-    // Trigger slide-out after 4.8 s
-    hideTimer.current = setTimeout(() => {
-      setToast((prev) => (prev?.id === id ? { ...prev, entering: false } : prev));
-    }, 4800);
-
-    // Remove from DOM after exit animation (0.5s)
-    hideTimer.current = setTimeout(() => {
-      setToast((prev) => (prev?.id === id ? null : prev));
-    }, 5400);
-
-    // Schedule next toast: random 18 – 38 s (natural, not spammy)
-    const delay = 18000 + Math.random() * 20000;
-    nextTimer.current = setTimeout(showToast, delay);
+  /** Índice de persona: baraja completa sin repetir; sin repetir tampoco entre barajas. */
+  const nextUserIndex = useCallback(() => {
+    if (deckRef.current.length === 0) {
+      let deck = shuffle(USERS.map((_, i) => i));
+      if (deck[deck.length - 1] === lastUserRef.current && deck.length > 1) {
+        [deck[0], deck[deck.length - 1]] = [deck[deck.length - 1], deck[0]];
+      }
+      deckRef.current = deck;
+    }
+    const idx = deckRef.current.pop()!;
+    lastUserRef.current = idx;
+    return idx;
   }, []);
 
+  /** Cadencia irregular: ráfagas cortas, ritmo normal y silencios largos. */
+  const nextDelay = useCallback(() => {
+    const r = Math.random();
+    if (r < 0.15) return 4000 + Math.random() * 5000; // ráfaga 4–9 s
+    if (r < 0.8) return 14000 + Math.random() * 20000; // normal 14–34 s
+    return 38000 + Math.random() * 32000; // silencio 38–70 s
+  }, []);
+
+  const scheduleNext = useCallback(
+    (fn: () => void, ms: number) => {
+      timers.current.push(setTimeout(fn, ms));
+    },
+    []
+  );
+
+  const showToast = useCallback(() => {
+    // Si la pestaña está oculta, no gastamos un evento: reintenta pronto.
+    if (typeof document !== "undefined" && document.hidden) {
+      scheduleNext(showToast, 8000 + Math.random() * 12000);
+      return;
+    }
+
+    const user = USERS[nextUserIndex()];
+
+    let action = pick(EVENT_TEMPLATES)();
+    for (let i = 0; i < 3 && action === lastActionRef.current; i++) {
+      action = pick(EVENT_TEMPLATES)();
+    }
+    lastActionRef.current = action;
+
+    const id = Date.now() + Math.random();
+    setToast({ id, user, action, entering: true });
+
+    const visibleMs = 4200 + Math.random() * 1500;
+    scheduleNext(
+      () => setToast((prev) => (prev?.id === id ? { ...prev, entering: false } : prev)),
+      visibleMs
+    );
+    scheduleNext(
+      () => setToast((prev) => (prev?.id === id ? null : prev)),
+      visibleMs + 600
+    );
+
+    scheduleNext(showToast, nextDelay());
+  }, [nextUserIndex, nextDelay, scheduleNext]);
+
   useEffect(() => {
-    // First toast appears after 6 s (let user read the page first)
-    nextTimer.current = setTimeout(showToast, 6000);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener?.("change", onChange);
+
+    // Primer toast: retraso aleatorio 3.5–9.5 s.
+    scheduleNext(showToast, 3500 + Math.random() * 6000);
+
     return () => {
-      clearTimeout(hideTimer.current);
-      clearTimeout(nextTimer.current);
+      clearAll();
+      mq.removeEventListener?.("change", onChange);
     };
-  }, [showToast]);
+  }, [showToast, scheduleNext]);
 
   if (!toast) return null;
 
@@ -79,11 +186,16 @@ export default function ToastNotifications() {
         left: "24px",
         zIndex: 40,
         pointerEvents: "none",
-        /* Entry: spring-like bounce; Exit: soft fade + slide */
-        transition: toast.entering
-          ? "transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease"
-          : "transform 0.35s ease-in, opacity 0.35s ease-in",
-        transform: toast.entering ? "translateY(0) scale(1)" : "translateY(16px) scale(0.94)",
+        transition: reduced
+          ? "opacity 0.3s ease"
+          : toast.entering
+            ? "transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease"
+            : "transform 0.35s ease-in, opacity 0.35s ease-in",
+        transform: reduced
+          ? "none"
+          : toast.entering
+            ? "translateY(0) scale(1)"
+            : "translateY(16px) scale(0.94)",
         opacity: toast.entering ? 1 : 0,
       }}
     >

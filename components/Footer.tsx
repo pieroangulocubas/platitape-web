@@ -1,5 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import { navLinks } from "@/lib/navLinks";
+import { COMPANY } from "@/lib/legal";
+import CookiePrefsButton from "./CookiePrefsButton";
 
 export default function Footer() {
   return (
@@ -10,9 +13,11 @@ export default function Footer() {
       {/* Llama decorativa fondo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/llama-bg.png"
+        src="/llama-bg.webp"
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         className="hidden md:block"
         style={{
           position: "absolute",
@@ -34,16 +39,16 @@ export default function Footer() {
           {/* Isotipo */}
           <a href="#" className="flex items-center">
             <Image
-              src="/isotipo.png"
+              src="/isotipo.webp"
               alt="Platita.pe"
-              width={150}
-              height={44}
-              style={{ height: "40px", width: "auto", objectFit: "contain" }}
+              width={256}
+              height={85}
+              style={{ height: "40px", width: "120px", objectFit: "contain" }}
             />
           </a>
 
           {/* Links */}
-          <div className="flex flex-wrap justify-center gap-6 text-sm" style={{ color: "rgba(15,10,46,0.50)" }}>
+          <div className="flex flex-wrap justify-center gap-6 text-sm" style={{ color: "rgba(15,10,46,0.66)" }}>
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -57,10 +62,51 @@ export default function Footer() {
           </div>
 
           {/* Legal */}
-          <p className="text-xs text-center md:text-right" style={{ color: "rgba(15,10,46,0.40)" }}>
+          <p className="text-xs text-center md:text-right" style={{ color: "rgba(15,10,46,0.66)" }}>
             © {new Date().getFullYear()} Platita.pe
             <br />Todos los derechos reservados
           </p>
+        </div>
+
+        {/* Enlaces legales */}
+        <div
+          className="mt-10 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-4"
+          style={{ borderColor: "rgba(28,15,76,0.10)" }}
+        >
+          <p className="text-xs text-center sm:text-left" style={{ color: "rgba(15,10,46,0.5)" }}>
+            {COMPANY.razonSocial} · RUC {COMPANY.ruc}
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs">
+            <Link href="/terminos" className="footer-link" style={{ color: "rgba(15,10,46,0.66)" }}>
+              Términos y Condiciones
+            </Link>
+            <Link href="/privacidad" className="footer-link" style={{ color: "rgba(15,10,46,0.66)" }}>
+              Política de Privacidad
+            </Link>
+            <CookiePrefsButton />
+            <Link
+              href="/libro-de-reclamaciones"
+              className="footer-link inline-flex items-center gap-1.5 font-bold"
+              style={{ color: "#1c0f4c" }}
+            >
+              <span
+                aria-hidden="true"
+                className="inline-flex items-center justify-center"
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 4,
+                  border: "1.5px solid #1c0f4c",
+                  fontSize: 11,
+                  fontWeight: 900,
+                  lineHeight: 1,
+                }}
+              >
+                LR
+              </span>
+              Libro de Reclamaciones
+            </Link>
+          </div>
         </div>
 
       </div>

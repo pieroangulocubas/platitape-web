@@ -2,9 +2,7 @@
  * ProyectosSection — tipos de proyecto en los que se podrá invertir
  * (categorías ilustrativas, no listados de oportunidades activas)
  */
-"use client";
 import Image from "next/image";
-import { MAX_RATE } from "@/lib/plans";
 
 interface ProjectType {
   name: string;
@@ -28,7 +26,7 @@ const projectTypes: ProjectType[] = [
     plazo: "12 meses",
     min: "S/ 10,000",
     accent: "#ec4899",
-    image: "/p-habilitaciones.PNG",
+    image: "/p-habilitaciones.webp",
     icon: "urbanizacion",
     featured: true,
   },
@@ -42,7 +40,7 @@ const projectTypes: ProjectType[] = [
     plazo: "12 meses",
     min: "S/ 10,000",
     accent: "#22d3ee",
-    image: "/p-subastas.PNG",
+    image: "/p-subastas.webp",
     icon: "remate",
   },
   {
@@ -55,7 +53,7 @@ const projectTypes: ProjectType[] = [
     plazo: "12 meses",
     min: "S/ 10,000",
     accent: "#f97316",
-    image: "/p-inmuebles.PNG",
+    image: "/p-inmuebles.webp",
     icon: "inmueble",
   },
   {
@@ -68,7 +66,7 @@ const projectTypes: ProjectType[] = [
     plazo: "12 meses",
     min: "S/ 10,000",
     accent: "#a78bfa",
-    image: "/p-construccion.PNG",
+    image: "/p-construccion.webp",
     icon: "construccion",
   },
 ];
@@ -185,7 +183,7 @@ function ProjectCard({ p }: { p: ProjectType }) {
       <div style={{ padding: "20px 20px 0", display: "flex", alignItems: "center", gap: "12px" }}>
         <div
           className="shrink-0 rounded-2xl flex items-center justify-center"
-          style={{ width: "44px", height: "44px", background: `${p.accent}14`, border: `1px solid ${p.accent}30` }}
+          style={{ width: "44px", height: "44px", background: "rgba(28,15,76,0.05)", border: "1px solid rgba(28,15,76,0.09)" }}
         >
           <CategoryIcon type={p.icon} color={p.accent} />
         </div>
@@ -213,11 +211,11 @@ function ProjectCard({ p }: { p: ProjectType }) {
             <li key={b} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
               <span
                 className="shrink-0 flex items-center justify-center"
-                style={{ width: "18px", height: "18px", borderRadius: "50%", background: `${p.accent}18`, marginTop: "1px" }}
+                style={{ width: "18px", height: "18px", borderRadius: "50%", background: "rgba(28,15,76,0.06)", marginTop: "1px" }}
               >
-                <IconCheck color={p.accent} />
+                <IconCheck color="#1c0f4c" />
               </span>
-              <span style={{ color: "rgba(15,10,46,0.60)", fontSize: "0.78rem", lineHeight: 1.45 }}>{b}</span>
+              <span style={{ color: "rgba(15,10,46,0.66)", fontSize: "0.78rem", lineHeight: 1.45 }}>{b}</span>
             </li>
           ))}
         </ul>
@@ -230,38 +228,50 @@ function ProjectCard({ p }: { p: ProjectType }) {
           ].map((s) => (
             <div
               key={s.label}
-              style={{ flex: 1, background: "#eef2f9", border: "1px solid #d2dcea", borderRadius: "10px", padding: "8px 10px" }}
+              style={{
+                flex: 1,
+                background: "#f6f7fb",
+                borderRadius: "10px",
+                border: "1px solid #e6e9f2",
+                padding: "9px 11px",
+              }}
             >
-              <p style={{ color: "rgba(15,10,46,0.4)", fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", margin: 0 }}>
+              <p
+                style={{
+                  color: "rgba(28,15,76,0.55)",
+                  fontSize: "0.68rem",
+                  fontWeight: 800,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  margin: 0,
+                }}
+              >
                 {s.label}
               </p>
-              <p style={{ color: "#1c0f4c", fontWeight: 700, fontSize: "0.8rem", margin: "2px 0 0" }}>
+              <p style={{ color: "#1c0f4c", fontWeight: 800, fontSize: "0.9rem", margin: "3px 0 0" }}>
                 {s.value}
               </p>
             </div>
           ))}
         </div>
 
-        {/* CTA */}
+        {/* CTA — lleva al formulario de lista de espera */}
         <a
           href="#registro"
+          className="btn-gradient proyecto-cta"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "6px",
-            padding: "10px",
+            gap: "7px",
+            padding: "11px",
             borderRadius: "12px",
-            fontSize: "0.8rem",
-            fontWeight: 700,
-            color: p.accent,
-            background: `${p.accent}1f`,
-            border: `1px solid ${p.accent}44`,
+            fontSize: "0.82rem",
+            fontWeight: 800,
             textDecoration: "none",
-            transition: "all 0.2s",
           }}
         >
-          Ver más <span aria-hidden="true">→</span>
+          Quiero invertir <span aria-hidden="true">→</span>
         </a>
       </div>
     </div>
@@ -283,9 +293,9 @@ export default function ProyectosSection() {
               <br className="hidden md:block" />
               que generan <span className="gradient-text">valor real</span>.
             </h2>
-            <p className="text-base max-w-md" style={{ color: "rgba(15,10,46,0.5)" }}>
+            <p className="text-base max-w-md" style={{ color: "rgba(15,10,46,0.66)" }}>
               Diversificamos nuestras inversiones en sectores estratégicos para generar{" "}
-              <span style={{ color: "#bc45e9", fontWeight: 700 }}>rentabilidad sostenible</span>.
+              <span style={{ color: "#a234cc", fontWeight: 700 }}>rentabilidad sostenible</span>.
             </p>
           </div>
           <div
@@ -298,7 +308,7 @@ export default function ProyectosSection() {
               </svg>
             </div>
             <p className="text-sm font-semibold max-w-45" style={{ color: "#1c0f4c" }}>
-              Tu inversión trabaja en proyectos <span style={{ color: "#bc45e9" }}>sólidos y rentables</span>.
+              Tu inversión trabaja en proyectos <span style={{ color: "#a234cc" }}>sólidos y rentables</span>.
             </p>
           </div>
         </div>
@@ -309,26 +319,6 @@ export default function ProyectosSection() {
             <ProjectCard key={p.name} p={p} />
           ))}
         </div>
-
-        {/* Trust row */}
-        <div className="flex flex-wrap justify-center gap-x-10 gap-y-5 mt-14 pt-10" style={{ borderTop: "1px solid rgba(28,15,76,0.08)" }}>
-          {trustBadges.map((b) => (
-            <div key={b.label} className="flex items-center gap-3 max-w-55">
-              <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(28,15,76,0.05)" }}>
-                {b.icon}
-              </div>
-              <div>
-                <p className="text-sm font-bold leading-tight" style={{ color: "#1c0f4c" }}>{b.label}</p>
-                <p className="text-xs mt-0.5 leading-tight" style={{ color: "rgba(15,10,46,0.42)" }}>{b.detail}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom note */}
-        <p className="text-center mt-10 text-xs" style={{ color: "rgba(15,10,46,0.3)" }}>
-          *Rentabilidad hasta {Math.round(MAX_RATE * 100)}% anual según categoría de inversión. Plazos son referenciales y pueden variar según el proyecto específico.
-        </p>
       </div>
     </section>
   );

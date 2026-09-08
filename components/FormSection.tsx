@@ -1,7 +1,20 @@
 ﻿"use client";
-import { WA_CONTACT_URL } from "@/lib/config";
+import {
+  WA_BASE_URL,
+  WA_CHANNEL_URL,
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+} from "@/lib/config";
 import { peruData } from "@/lib/peru-data";
-import { useMemo, useState } from "react";
+import { track } from "@/lib/analytics";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import TurnstileWidget, { type TurnstileHandle } from "./TurnstileWidget";
+
+interface LeadMeta {
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+  referrer: string;
+}
 
 interface FormData {
   nombre: string;
@@ -11,6 +24,9 @@ interface FormData {
   provincia: string;
   distrito: string;
   fechaNacimiento: string;
+  montoInteres: string;
+  viveExtranjero: boolean;
+  ubicacionExtranjero: string;
 }
 
 const INITIAL: FormData = {
@@ -21,6 +37,30 @@ const INITIAL: FormData = {
   provincia: "",
   distrito: "",
   fechaNacimiento: "",
+  montoInteres: "",
+  viveExtranjero: false,
+  ubicacionExtranjero: "",
+};
+
+// Rango de inversión de interés — métrica clave de validación de demanda.
+const MONTO_INTERES_OPCIONES: [string, string][] = [
+  ["10-25k", "Entre S/ 10,000 y S/ 25,000"],
+  ["25-50k", "Entre S/ 25,000 y S/ 50,000"],
+  ["50-100k", "Entre S/ 50,000 y S/ 100,000"],
+  ["100-250k", "Entre S/ 100,000 y S/ 250,000"],
+  ["250k+", "Más de S/ 250,000"],
+  ["explorando", "Aún estoy explorando"],
+];
+
+// Valor de pipeline potencial (S/) para el evento generate_lead de GA4:
+// punto medio del rango, o el mínimo para el tramo abierto.
+const MONTO_INTERES_VALOR: Record<string, number> = {
+  "10-25k": 17500,
+  "25-50k": 37500,
+  "50-100k": 75000,
+  "100-250k": 175000,
+  "250k+": 250000,
+  explorando: 0,
 };
 
 // Light input style
@@ -74,6 +114,9 @@ const IconBuilding = () => (
 const IconPin = () => (
   <svg {...iconProps}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
 );
+const IconWallet = () => (
+  <svg {...iconProps}><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" /><path d="M3 5v14a2 2 0 0 0 2 2h16v-5" /><path d="M18 12a2 2 0 0 0 0 4h4v-4Z" /></svg>
+);
 
 function LightInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   const [focused, setFocused] = useState(false);
@@ -104,6 +147,33 @@ export default function FormSection() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState("");
+  // Código corto para verificar el teléfono por WhatsApp (Nivel 1).
+  const [verifyCode, setVerifyCode] = useState<string | null>(null);
+
+  // Honeypot: input oculto que los humanos no ven ni tabulan; los bots lo llenan.
+  const hpRef = useRef<HTMLInputElement>(null);
+
+  // Token de Cloudflare Turnstile (null hasta que el widget lo emite).
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const onCaptcha = useCallback((t: string | null) => setCaptchaToken(t), []);
+  const captchaRequired = Boolean(NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  const turnstileRef = useRef<TurnstileHandle>(null);
+
+  // Atribución de campaña — se captura una vez al montar.
+  const metaRef = useRef<LeadMeta>({ utmSource: "", utmMedium: "", utmCampaign: "", referrer: "" });
+  useEffect(() => {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      metaRef.current = {
+        utmSource: p.get("utm_source") ?? "",
+        utmMedium: p.get("utm_medium") ?? "",
+        utmCampaign: p.get("utm_campaign") ?? "",
+        referrer: document.referrer ?? "",
+      };
+    } catch {
+      /* noop */
+    }
+  }, []);
 
   const provinces = useMemo(
     () => peruData.find((d) => d.name === form.departamento)?.provinces ?? [],
@@ -115,7 +185,15 @@ export default function FormSection() {
   );
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    const { name, value } = e.target;
+    const target = e.target;
+    const { name } = target;
+    if (name === "viveExtranjero") {
+      const checked = (target as HTMLInputElement).checked;
+      setForm((prev) => ({ ...prev, viveExtranjero: checked }));
+      setError("");
+      return;
+    }
+    const { value } = target;
     setForm((prev) => {
       if (name === "departamento") return { ...prev, departamento: value, provincia: "", distrito: "" };
       if (name === "provincia")    return { ...prev, provincia: value, distrito: "" };
@@ -126,9 +204,16 @@ export default function FormSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const required: (keyof FormData)[] = ["nombre","correo","telefono","departamento","provincia","distrito","fechaNacimiento"];
-    for (const key of required) {
+    const base: (keyof FormData)[] = ["nombre","correo","telefono","fechaNacimiento","montoInteres"];
+    const loc: (keyof FormData)[] = form.viveExtranjero
+      ? ["ubicacionExtranjero"]
+      : ["departamento","provincia","distrito"];
+    for (const key of [...base, ...loc]) {
       if (!form[key]) { setError("Por favor, completa todos los campos."); return; }
+    }
+    if (captchaRequired && !captchaToken) {
+      setError("Completa la verificación de seguridad para continuar.");
+      return;
     }
     setLoading(true);
     setError("");
@@ -139,27 +224,60 @@ export default function FormSection() {
         body: JSON.stringify({
           nombre: form.nombre,
           correo: form.correo,
-          telefono: `+51 ${form.telefono}`,
+          telefono: form.telefono,
           departamento: form.departamento,
           provincia: form.provincia,
           distrito: form.distrito,
           fechaNacimiento: form.fechaNacimiento,
+          montoInteres: form.montoInteres,
+          viveExtranjero: form.viveExtranjero,
+          ubicacionExtranjero: form.ubicacionExtranjero,
+          website: hpRef.current?.value ?? "",
+          turnstileToken: captchaToken,
+          ...metaRef.current,
         }),
       });
-      if (!res.ok) throw new Error("Error al enviar");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(
+          data.error || "Hubo un error al enviar. Intenta de nuevo o escríbenos por WhatsApp."
+        );
+      }
+      if (typeof data.verifyCode === "string") setVerifyCode(data.verifyCode);
+      track("generate_lead", {
+        currency: "PEN",
+        value: MONTO_INTERES_VALOR[form.montoInteres] ?? 0,
+        monto_interes: form.montoInteres,
+        vive_extranjero: form.viveExtranjero,
+        pais: form.viveExtranjero ? form.ubicacionExtranjero : "Perú",
+        duplicate: Boolean(data.duplicate),
+        utm_source: metaRef.current.utmSource || undefined,
+        utm_campaign: metaRef.current.utmCampaign || undefined,
+      });
       setSubmitted(true);
-    } catch {
-      setError("Hubo un error al enviar. Intenta de nuevo o escríbenos por WhatsApp.");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Hubo un error al enviar. Intenta de nuevo o escríbenos por WhatsApp."
+      );
+      // El token de Turnstile es de un solo uso: si el envío falló, pide uno nuevo.
+      setCaptchaToken(null);
+      turnstileRef.current?.reset();
     } finally {
       setLoading(false);
     }
   }
 
   if (submitted) {
+    // Chat directo con el negocio, con el código pre-cargado para confirmar el teléfono.
+    const waDirectConfirmUrl = `${WA_BASE_URL}?text=${encodeURIComponent(
+      `Hola, confirmo mi registro en Platita.pe ✅ Mi código: ${verifyCode ?? ""}`
+    )}`;
     return (
       <section id="registro" className="py-12 md:py-20 px-4" style={{ background: "#ffffff" }}>
         <div className="max-w-xl mx-auto text-center">
-          <div className="rounded-3xl p-12 flex flex-col items-center gap-6"
+          <div className="rounded-3xl p-12 flex flex-col items-center gap-5"
             style={{ background: "#ffffff", border: "1.5px solid #e0ddf2", boxShadow: "0 8px 40px rgba(28,15,76,0.08)" }}>
             <div className="w-20 h-20 rounded-full flex items-center justify-center text-4xl"
               style={{ background: "linear-gradient(135deg,#22d3ee,#8b5cf6)" }}>
@@ -168,15 +286,38 @@ export default function FormSection() {
             <h2 className="text-3xl font-black" style={{ color: "#1c0f4c" }}>
               ¡Ya estás en la lista!
             </h2>
-            <p className="text-lg" style={{ color: "rgba(15,10,46,0.58)" }}>
-              Te notificaremos cuando Platita.pe esté disponible en tu zona.
-              Mientras tanto, únete a nuestro canal de WhatsApp para estar al día.
+            <p className="text-lg" style={{ color: "rgba(15,10,46,0.66)" }}>
+              {verifyCode
+                ? "Último paso opcional: escríbenos por WhatsApp con tu código y aseguras acceso prioritario cuando lancemos."
+                : "Te notificaremos cuando Platita.pe esté disponible en tu zona."}
             </p>
-            <a href={WA_CONTACT_URL} target="_blank" rel="noopener noreferrer"
-              className="btn-gradient px-8 py-4 rounded-full font-bold flex items-center gap-2">
-              <span>📲</span>
-              <span>Unirme al canal</span>
-            </a>
+
+            {verifyCode ? (
+              <a href={waDirectConfirmUrl} target="_blank" rel="noopener noreferrer"
+                className="btn-gradient px-8 py-4 rounded-full font-bold flex items-center gap-2">
+                <span>📲</span>
+                <span>Confirmar por WhatsApp</span>
+              </a>
+            ) : (
+              <a href={WA_CHANNEL_URL} target="_blank" rel="noopener noreferrer"
+                className="btn-gradient px-8 py-4 rounded-full font-bold flex items-center gap-2">
+                <span>📢</span>
+                <span>Unirme al canal</span>
+              </a>
+            )}
+
+            {/* El canal (difusión) siempre disponible como secundario */}
+            {verifyCode && (
+              <a href={WA_CHANNEL_URL} target="_blank" rel="noopener noreferrer"
+                className="text-sm font-bold" style={{ color: "#a234cc" }}>
+                Únete también a nuestro canal de WhatsApp →
+              </a>
+            )}
+            {verifyCode && (
+              <p className="text-xs" style={{ color: "rgba(15,10,46,0.66)" }}>
+                También te enviamos un correo para confirmar tu email.
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -205,8 +346,8 @@ export default function FormSection() {
             Únete a{" "}
             <span className="gradient-text">inversionistas</span>
           </h2>
-          <p className="text-base" style={{ color: "rgba(8,11,30,0.52)" }}>
-            Sin compromiso. Te avisamos antes del lanzamiento y tendrás acceso prioritario.
+          <p className="text-base" style={{ color: "rgba(8,11,30,0.66)" }}>
+            Sin compromiso. Cupos limitados para el primer grupo de inversionistas: te avisamos antes del lanzamiento y tendrás acceso prioritario.
           </p>
         </div>
 
@@ -214,38 +355,51 @@ export default function FormSection() {
         <div className="rounded-3xl p-8 md:p-10" style={{ background: "#ffffff", border: "1px solid #d2dcea", boxShadow: "0 2px 8px rgba(8,10,30,0.05), 0 12px 40px rgba(8,10,30,0.07)" }}>
           <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
 
+            {/* Honeypot anti-spam — oculto para humanos, invisible a lectores de pantalla */}
+            <input
+              ref={hpRef}
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+            />
+
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.50)" }}>Nombre completo *</label>
+                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Nombre completo *</label>
                 <div className="relative">
                   <FieldIcon><IconUser /></FieldIcon>
-                  <LightInput type="text" name="nombre" value={form.nombre} onChange={handleChange} placeholder="Juan Pérez García" />
+                  <LightInput type="text" name="nombre" aria-label="Nombre completo" value={form.nombre} onChange={handleChange} placeholder="Juan Pérez García" />
                 </div>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.50)" }}>Correo electrónico *</label>
+                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Correo electrónico *</label>
                 <div className="relative">
                   <FieldIcon><IconMail /></FieldIcon>
-                  <LightInput type="email" name="correo" value={form.correo} onChange={handleChange} placeholder="juan@email.com" />
+                  <LightInput type="email" name="correo" aria-label="Correo electrónico" value={form.correo} onChange={handleChange} placeholder="juan@email.com" />
                 </div>
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.50)" }}>Teléfono / WhatsApp *</label>
+                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Teléfono / WhatsApp *</label>
                 <div className="relative">
                   <FieldIcon><IconPhone /></FieldIcon>
-                  <span className="absolute left-[3.1rem] top-1/2 -translate-y-1/2 text-sm font-semibold" style={{ color: "rgba(15,10,46,0.40)" }}>🇵🇪 +51</span>
-                  <LightInput type="tel" name="telefono" value={form.telefono} onChange={handleChange} placeholder="999 999 999" style={{ paddingLeft: "6.6rem" }} />
+                  <LightInput type="tel" name="telefono" aria-label="Teléfono / WhatsApp" value={form.telefono} onChange={handleChange} placeholder="+51 999 999 999" autoComplete="tel" />
                 </div>
+                <span className="text-[0.68rem]" style={{ color: "rgba(15,10,46,0.5)" }}>
+                  Con código de país (ej. +51 Perú, +1 EE.UU., +34 España).
+                </span>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.50)" }}>Fecha de nacimiento *</label>
+                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Fecha de nacimiento *</label>
                 <div className="relative">
                   <FieldIcon><IconCalendar /></FieldIcon>
                   <LightInput
-                    type="date" name="fechaNacimiento" value={form.fechaNacimiento} onChange={handleChange}
+                    type="date" name="fechaNacimiento" aria-label="Fecha de nacimiento" value={form.fechaNacimiento} onChange={handleChange}
                     max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0]}
                     style={{ colorScheme: "light" }}
                   />
@@ -253,39 +407,84 @@ export default function FormSection() {
               </div>
             </div>
 
+            <label className="flex items-center gap-2 text-sm" style={{ color: "#3a3357" }}>
+              <input
+                type="checkbox"
+                name="viveExtranjero"
+                checked={form.viveExtranjero}
+                onChange={handleChange}
+              />
+              Vivo fuera del Perú
+            </label>
+
+            {form.viveExtranjero ? (
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Ciudad y país de residencia *</label>
+                <div className="relative">
+                  <FieldIcon><IconPin /></FieldIcon>
+                  <LightInput
+                    type="text"
+                    name="ubicacionExtranjero"
+                    aria-label="Ciudad y país de residencia"
+                    value={form.ubicacionExtranjero}
+                    onChange={handleChange}
+                    placeholder="Ej.: Miami, Estados Unidos"
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Departamento *</label>
+                  <div className="relative">
+                    <FieldIcon><IconBuilding /></FieldIcon>
+                    <LightSelect name="departamento" aria-label="Departamento" value={form.departamento} onChange={handleChange}>
+                      <option value="">— Selecciona tu departamento —</option>
+                      {peruData.map((d) => <option key={d.name} value={d.name}>{d.name}</option>)}
+                    </LightSelect>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Provincia *</label>
+                    <div className="relative">
+                      <FieldIcon><IconPin /></FieldIcon>
+                      <LightSelect name="provincia" aria-label="Provincia" value={form.provincia} onChange={handleChange} disabled={!form.departamento} style={{ opacity: !form.departamento ? 0.45 : 1 }}>
+                        <option value="">— Selecciona provincia —</option>
+                        {provinces.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
+                      </LightSelect>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Distrito *</label>
+                    <div className="relative">
+                      <FieldIcon><IconPin /></FieldIcon>
+                      <LightSelect name="distrito" aria-label="Distrito" value={form.distrito} onChange={handleChange} disabled={!form.provincia} style={{ opacity: !form.provincia ? 0.45 : 1 }}>
+                        <option value="">— Selecciona distrito —</option>
+                        {districts.map((d) => <option key={d} value={d}>{d}</option>)}
+                      </LightSelect>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.50)" }}>Departamento *</label>
+              <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>¿Cuánto te interesaría invertir? *</label>
               <div className="relative">
-                <FieldIcon><IconBuilding /></FieldIcon>
-                <LightSelect name="departamento" value={form.departamento} onChange={handleChange}>
-                  <option value="">— Selecciona tu departamento —</option>
-                  {peruData.map((d) => <option key={d.name} value={d.name}>{d.name}</option>)}
+                <FieldIcon><IconWallet /></FieldIcon>
+                <LightSelect name="montoInteres" aria-label="Rango de inversión de interés" value={form.montoInteres} onChange={handleChange}>
+                  <option value="">— Selecciona un rango —</option>
+                  {MONTO_INTERES_OPCIONES.map(([value, label]) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
                 </LightSelect>
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.50)" }}>Provincia *</label>
-                <div className="relative">
-                  <FieldIcon><IconPin /></FieldIcon>
-                  <LightSelect name="provincia" value={form.provincia} onChange={handleChange} disabled={!form.departamento} style={{ opacity: !form.departamento ? 0.45 : 1 }}>
-                    <option value="">— Selecciona provincia —</option>
-                    {provinces.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
-                  </LightSelect>
-                </div>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.50)" }}>Distrito *</label>
-                <div className="relative">
-                  <FieldIcon><IconPin /></FieldIcon>
-                  <LightSelect name="distrito" value={form.distrito} onChange={handleChange} disabled={!form.provincia} style={{ opacity: !form.provincia ? 0.45 : 1 }}>
-                    <option value="">— Selecciona distrito —</option>
-                    {districts.map((d) => <option key={d} value={d}>{d}</option>)}
-                  </LightSelect>
-                </div>
-              </div>
-            </div>
+            {/* CAPTCHA — sólo se muestra si hay site key configurada */}
+            <TurnstileWidget ref={turnstileRef} action="registro" onToken={onCaptcha} />
 
             {error && (
               <p className="text-sm px-4 py-3 rounded-xl" style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.25)", color: "#dc2626" }}>
@@ -306,9 +505,21 @@ export default function FormSection() {
                   <span>Enviando...</span>
                 </>
               ) : (
-                <span>Invertir</span>
+                <span>Reserva tu lugar</span>
               )}
             </button>
+
+            <p className="text-xs text-center mt-1" style={{ color: "rgba(15,10,46,0.55)" }}>
+              Al enviar aceptas los{" "}
+              <a href="/terminos" target="_blank" className="font-semibold" style={{ color: "#a234cc", textDecoration: "underline" }}>
+                Términos y Condiciones
+              </a>{" "}
+              y la{" "}
+              <a href="/privacidad" target="_blank" className="font-semibold" style={{ color: "#a234cc", textDecoration: "underline" }}>
+                Política de Privacidad
+              </a>
+              .
+            </p>
           </form>
         </div>
 
@@ -322,13 +533,13 @@ export default function FormSection() {
           </div>
           <div className="flex-1 text-center sm:text-left">
             <p className="font-semibold text-sm" style={{ color: "#1c0f4c" }}>Únete a nuestro canal de WhatsApp</p>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(15,10,46,0.48)" }}>
+            <p className="text-xs mt-0.5" style={{ color: "rgba(15,10,46,0.66)" }}>
               Recibe actualizaciones exclusivas, tips de inversión y el aviso de lanzamiento antes que nadie
             </p>
           </div>
-          <a href={WA_CONTACT_URL} target="_blank" rel="noopener noreferrer"
+          <a href={WA_CHANNEL_URL} target="_blank" rel="noopener noreferrer"
             className="shrink-0 px-5 py-2.5 rounded-xl font-bold text-sm text-white transition-all hover:opacity-90"
-            style={{ background: "#25D366", boxShadow: "0 4px 20px rgba(37,211,102,0.3)", textDecoration: "none" }}>
+            style={{ background: "#0C7A3E", boxShadow: "0 4px 20px rgba(37,211,102,0.3)", textDecoration: "none" }}>
             Unirme al canal
           </a>
         </div>
