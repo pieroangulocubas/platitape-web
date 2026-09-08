@@ -1,8 +1,5 @@
-﻿"use client";
-import Image from "next/image";
-import { ReactNode, useState } from "react";
-
-const YOUTUBE_VIDEO_ID = "reGTlUyOei0";
+﻿import { ReactNode } from "react";
+import VslPlayer from "./VslPlayer";
 
 /* ── icons ── */
 const IconUserCheck = ({ c }: { c: string }) => (
@@ -77,8 +74,6 @@ const steps: Step[] = [
 ];
 
 export default function HowItWorksSection() {
-  const [active, setActive] = useState(false);
-
   return (
     <section id="como-funciona" className="py-14 md:py-24 px-4" style={{ background: "#ffffff" }}>
       <div className="max-w-6xl mx-auto">
@@ -95,57 +90,14 @@ export default function HowItWorksSection() {
             ¿Cómo{" "}
             <span className="gradient-text">funciona?</span>
           </h2>
-          <p className="text-lg max-w-xl mx-auto" style={{ color: "rgba(15,10,46,0.5)" }}>
+          <p className="text-lg max-w-xl mx-auto" style={{ color: "rgba(15,10,46,0.66)" }}>
             Míralo en 1:23 min y luego sigue los 4 pasos para que tu dinero trabaje por ti
           </p>
         </div>
 
         {/* ── VSL Video ── */}
         <div className="max-w-3xl mx-auto mb-6">
-          <div
-            className={`rounded-3xl overflow-hidden relative ${!active ? "vsl-glow" : ""}`}
-            style={{
-              aspectRatio: "16/9",
-              background: "#1c0f4c",
-              boxShadow: "0 24px 80px rgba(28,15,76,0.16), 0 4px 20px rgba(28,15,76,0.08)",
-            }}
-          >
-            {active ? (
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`}
-                title="Video Platita.pe"
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-                style={{ border: "none" }}
-              />
-            ) : (
-              <div
-                className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                onClick={() => setActive(true)}
-              >
-                {/* Thumbnail image — sin overlay, máxima nitidez */}
-                <Image
-                  src="/miniatura-vsl.png"
-                  alt="Video Platita.pe"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 768px"
-                  style={{ objectFit: "cover", objectPosition: "center" }}
-                  quality={100}
-                />
-                {/* Botón play centrado, con anillos que invitan a hacer clic */}
-                <div className="relative z-10" style={{ width: "72px", height: "72px" }}>
-                  <span className="play-ring" />
-                  <span className="play-ring play-ring-delay" />
-                  <button className="play-btn relative z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="28" height="28" style={{ marginLeft: "4px" }}>
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <VslPlayer />
         </div>
 
         {/* ── Trust strip ── */}
@@ -155,7 +107,7 @@ export default function HowItWorksSection() {
             { icon: "📋", text: "Contratos legales notariales" },
             { icon: "🇵🇪", text: "Proyectos verificados en Perú" },
           ].map((b) => (
-            <div key={b.text} className="flex items-center gap-2 text-sm" style={{ color: "rgba(15,10,46,0.52)" }}>
+            <div key={b.text} className="flex items-center gap-2 text-sm" style={{ color: "rgba(15,10,46,0.66)" }}>
               <span>{b.icon}</span>
               <span>{b.text}</span>
             </div>
@@ -165,7 +117,7 @@ export default function HowItWorksSection() {
         {/* ── Divider label ── */}
         <div className="flex items-center gap-4 mb-10 max-w-3xl mx-auto">
           <div className="flex-1 h-px" style={{ background: "rgba(28,15,76,0.12)" }} />
-          <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "rgba(28,15,76,0.38)" }}>
+          <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "rgba(28,15,76,0.66)" }}>
             4 pasos para empezar
           </span>
           <div className="flex-1 h-px" style={{ background: "rgba(28,15,76,0.12)" }} />
@@ -236,7 +188,7 @@ export default function HowItWorksSection() {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-2" style={{ color: "#1c0f4c" }}>{step.title}</h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(15,10,46,0.5)" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "rgba(15,10,46,0.66)" }}>
                       {step.description}
                     </p>
                   </div>

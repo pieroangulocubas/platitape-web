@@ -54,7 +54,7 @@ export default function StickyMobileCTA() {
           href="#registro"
           className="btn-gradient flex-1 text-center py-3.5 rounded-2xl font-bold text-sm"
         >
-          <span>Unirme a la lista de espera</span>
+          <span>Reserva tu lugar</span>
         </a>
       </div>
     </div>

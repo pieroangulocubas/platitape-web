@@ -1,6 +1,5 @@
-"use client";
-import Image from "next/image";
 import { PLAN_TIERS } from "@/lib/plans";
+import Image from "next/image";
 
 function fmt(n: number) {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -16,10 +15,10 @@ const PLAN_ACCENTS: Record<number, string> = {
 
 /* Icono por plan — cartera.png para 1-3 (teñida por acento), diamante.png para el tope */
 const PLAN_ICON_SRC: Record<number, string> = {
-  1: "/icons/cartera-magenta.png",
-  2: "/icons/cartera-blue.png",
-  3: "/icons/cartera-magenta.png",
-  4: "/icons/diamante-magenta.png",
+  1: "/icons/cartera-magenta.webp",
+  2: "/icons/cartera-blue.webp",
+  3: "/icons/cartera-magenta.webp",
+  4: "/icons/diamante-magenta.webp",
 };
 
 function PlanIcon({ tier }: { tier: number }) {
@@ -38,41 +37,6 @@ const IconCalendarCheck = ({ color }: { color: string }) => (
   </svg>
 );
 
-const trustBadges = [
-  {
-    label: "100% seguro",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><polyline points="9 12 11 14 15 10" />
-      </svg>
-    ),
-  },
-  {
-    label: "Contratos notariales",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
-      </svg>
-    ),
-  },
-  {
-    label: "Proyectos en Perú",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Respaldo en proyectos inmobiliarios",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1c0f4c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9.5 12 3l9 6.5" /><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10" />
-      </svg>
-    ),
-  },
-];
 
 export default function PlanesSection() {
   return (
@@ -102,8 +66,8 @@ export default function PlanesSection() {
               Con <span className="gradient-text">Platita.pe</span> tus inversiones
               <br className="hidden md:block" /> crecen, tú ganas más.
             </h2>
-            <p className="text-base max-w-md" style={{ color: "rgba(8,11,30,0.50)" }}>
-              Elige el plan que mejor se adapte a tus <span style={{ color: "#bc45e9", fontWeight: 700 }}>objetivos</span>
+            <p className="text-base max-w-md" style={{ color: "rgba(8,11,30,0.66)" }}>
+              Elige el plan que mejor se adapte a tus <span style={{ color: "#a234cc", fontWeight: 700 }}>objetivos</span>
             </p>
           </div>
           <div
@@ -116,7 +80,7 @@ export default function PlanesSection() {
               </svg>
             </div>
             <p className="text-sm font-semibold" style={{ color: "#1c0f4c" }}>
-              Obtén ingresos <span style={{ color: "#bc45e9" }}>mensuales</span>.
+              Obtén ingresos <span style={{ color: "#a234cc" }}>mensuales</span>.
             </p>
           </div>
         </div>
@@ -169,13 +133,13 @@ export default function PlanesSection() {
                 <div className="h-px w-full" style={{ background: "rgba(28,15,76,0.08)" }} />
 
                 <div>
-                  <p className="text-xs font-semibold" style={{ color: "rgba(15,10,46,0.40)" }}>
+                  <p className="text-xs font-semibold" style={{ color: "rgba(15,10,46,0.66)" }}>
                     Hasta
                   </p>
                   <p className="text-6xl font-black leading-none mt-1.5" style={{ color: accent }}>
                     {Math.round(tier.rate * 100)}%
                   </p>
-                  <p className="text-xs font-semibold mt-1" style={{ color: "rgba(15,10,46,0.40)" }}>
+                  <p className="text-xs font-semibold mt-1" style={{ color: "rgba(15,10,46,0.66)" }}>
                     rentabilidad anual
                   </p>
                 </div>
@@ -192,15 +156,6 @@ export default function PlanesSection() {
           })}
         </div>
 
-        {/* Trust row */}
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-10 pt-8" style={{ borderTop: "1px solid rgba(28,15,76,0.08)" }}>
-          {trustBadges.map((b) => (
-            <div key={b.label} className="flex items-center gap-2">
-              {b.icon}
-              <span className="text-sm font-semibold" style={{ color: "#1c0f4c" }}>{b.label}</span>
-            </div>
-          ))}
-        </div>
 
         {/* Consolidación de contrato al subir de categoría */}
         <div
@@ -217,13 +172,13 @@ export default function PlanesSection() {
           </div>
           <div>
             <p className="font-black text-base mb-1.5" style={{ color: "#1c0f4c" }}>Tu plan sube contigo</p>
-            <p className="text-sm leading-relaxed" style={{ color: "rgba(8,11,30,0.60)" }}>
+            <p className="text-sm leading-relaxed" style={{ color: "rgba(8,11,30,0.66)" }}>
               Cada vez que incrementas tu capital y alcanzas una nueva categoría de inversión, tu inversión se
               consolida en un <strong style={{ color: "#1c0f4c" }}>nuevo contrato por el saldo total</strong> y
               comienza un <strong style={{ color: "#1c0f4c" }}>nuevo plazo de 12 meses</strong> con la rentabilidad
               correspondiente a la nueva categoría.
             </p>
-            <p className="text-xs mt-3 px-3 py-2 rounded-xl inline-block" style={{ background: "rgba(255,255,255,0.6)", color: "rgba(8,11,30,0.55)" }}>
+            <p className="text-xs mt-3 px-3 py-2 rounded-xl inline-block" style={{ background: "rgba(255,255,255,0.85)", color: "rgba(8,11,30,0.72)" }}>
               Ejemplo: empiezas con S/10,000 (Plan 1, 14%). A los 2 meses agregas S/40,000 más — se suma el saldo
               total (S/50,000) y desde esa fecha corre un nuevo contrato de 12 meses al 16% (Plan 2), y así
               sucesivamente.

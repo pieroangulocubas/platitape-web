@@ -150,10 +150,10 @@ function RowIcon({ name, color }: { name: string; color: string }) {
 
 function ColIcon({ name }: { name: string }) {
   const src: Record<string, string> = {
-    banco: "/icons/banco-norm.png",
-    cajas: "/icons/cajas-norm.png",
-    fondos: "/icons/fondos-norm.png",
-    acciones: "/icons/acciones-norm.png",
+    banco: "/icons/banco-norm.webp",
+    cajas: "/icons/cajas-norm.webp",
+    fondos: "/icons/fondos-norm.webp",
+    acciones: "/icons/acciones-norm.webp",
   };
   return (
     <div style={{ position: "relative", width: 52, height: 52 }}>
@@ -210,7 +210,7 @@ export default function ComparativoSection() {
             Compara y decide{" "}
             <span className="gradient-text">con datos</span>
           </h2>
-          <p className="text-base max-w-xl mx-auto" style={{ color: "rgba(8,11,30,0.50)" }}>
+          <p className="text-base max-w-xl mx-auto" style={{ color: "rgba(8,11,30,0.66)" }}>
             Tu platita merece trabajar más duro. Mira cómo se compara Platita.pe con las alternativas tradicionales.
           </p>
         </div>
@@ -230,7 +230,7 @@ export default function ComparativoSection() {
             <div className="grid" style={{ gridTemplateColumns: "0.85fr 1fr 1fr 1fr 1fr", background: "#1c0f4c" }}>
               <div className="flex flex-col items-center justify-center gap-1.5 text-center px-2" style={{ minHeight: HEAD_H }}>
                 <div style={{ position: "relative", width: 52, height: 52 }}>
-                  <Image src="/icons/informacion-norm.png" alt="" fill sizes="52px" style={{ objectFit: "contain" }} />
+                  <Image src="/icons/informacion-norm.webp" alt="" fill sizes="52px" style={{ objectFit: "contain" }} />
                 </div>
                 <span className="text-xs font-bold tracking-wide" style={{ color: "rgba(255,255,255,0.75)" }}>
                   Información
@@ -282,7 +282,7 @@ export default function ComparativoSection() {
                   <div
                     key={col.key}
                     className="flex items-center justify-center text-center px-2"
-                    style={{ minHeight: ROW_H, fontSize: "0.8rem", fontWeight: 600, color: "rgba(15,10,46,0.45)" }}
+                    style={{ minHeight: ROW_H, fontSize: "0.8rem", fontWeight: 600, color: "rgba(15,10,46,0.66)" }}
                   >
                     {row[col.key]}
                   </div>
@@ -312,7 +312,7 @@ export default function ComparativoSection() {
                 className="rounded-full overflow-hidden relative shrink-0"
                 style={{ width: 54, height: 54, background: "#1c0f4c", boxShadow: "0 2px 8px rgba(28,15,76,0.25)" }}
               >
-                <Image src="/isotipo.png" alt="" fill sizes="54px" style={{ objectFit: "cover", objectPosition: "left center" }} />
+                <Image src="/isotipo.webp" alt="" fill sizes="54px" style={{ objectFit: "cover", objectPosition: "left center" }} />
               </div>
               <span className="text-sm font-black text-white">platita.pe</span>
             </div>
@@ -369,11 +369,11 @@ export default function ComparativoSection() {
                   >
                     <div
                       className="text-[0.65rem] font-bold uppercase tracking-wide mb-1"
-                      style={{ color: "rgba(15,10,46,0.4)" }}
+                      style={{ color: "rgba(15,10,46,0.66)" }}
                     >
                       {col.label}
                     </div>
-                    <div className="text-xs font-bold leading-tight" style={{ color: "rgba(15,10,46,0.6)" }}>
+                    <div className="text-xs font-bold leading-tight" style={{ color: "rgba(15,10,46,0.66)" }}>
                       {row[col.key]}
                     </div>
                   </div>
@@ -394,7 +394,7 @@ export default function ComparativoSection() {
           ))}
         </div>
 
-        <p className="text-center text-xs mt-6" style={{ color: "rgba(15,10,46,0.30)" }}>
+        <p className="text-center text-xs mt-6" style={{ color: "rgba(15,10,46,0.66)" }}>
           *Rentabilidades estimadas basadas en datos históricos del mercado peruano. No garantizan resultados futuros.
         </p>
       </div>

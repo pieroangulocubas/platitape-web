@@ -61,11 +61,11 @@ export default function Navbar() {
         {/* Logo */}
         <a href="#" className="flex items-center">
           <Image
-            src="/isotipo.png"
+            src="/isotipo.webp"
             alt="Platita.pe"
-            width={140}
-            height={40}
-            style={{ height: "40px", width: "auto", objectFit: "contain" }}
+            width={256}
+            height={85}
+            style={{ height: "40px", width: "120px", objectFit: "contain" }}
             priority
           />
         </a>
@@ -79,7 +79,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`group relative pb-1 text-sm font-medium transition-colors duration-200 ${
-                  isActive ? "text-[#1c0f4c]" : "text-[rgba(15,10,46,0.60)] hover:text-[#1c0f4c]"
+                  isActive ? "text-[#1c0f4c]" : "text-[rgba(15,10,46,0.66)] hover:text-[#1c0f4c]"
                 }`}
               >
                 {link.label}
@@ -103,7 +103,7 @@ export default function Navbar() {
             href="#registro"
             className="btn-gradient px-5 py-2 rounded-full text-sm font-bold"
           >
-            <span>Unirme a la lista</span>
+            <span>Reserva tu lugar</span>
           </a>
         </div>
 
@@ -154,7 +154,7 @@ export default function Navbar() {
             className="btn-gradient px-5 py-2.5 rounded-full text-sm font-bold text-center"
             onClick={() => setMenuOpen(false)}
           >
-            <span>Unirme a la lista</span>
+            <span>Reserva tu lugar</span>
           </a>
         </div>
       )}

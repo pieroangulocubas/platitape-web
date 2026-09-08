@@ -1,12 +1,11 @@
-﻿"use client";
 import Image from "next/image";
 import { MAX_RATE } from "@/lib/plans";
 /** App Preview — phone mockup centrado, dominante, con toasts flotantes descriptivos */
 
 const miniProjects = [
-  { name: "Condominio Los Andes",    location: "Cajamarca", price: "S/. 10,000", image: "/p-habilitaciones.PNG" },
-  { name: "Residencial Miraflores",  location: "Lima",      price: "S/. 10,000", image: "/p-inmuebles.PNG" },
-  { name: "Paseo de las Palmeras",   location: "Chiclayo",  price: "S/. 10,000", image: "/p-construccion.PNG" },
+  { name: "Condominio Los Andes",    location: "Cajamarca", price: "S/. 10,000", image: "/p-habilitaciones.webp" },
+  { name: "Residencial Miraflores",  location: "Lima",      price: "S/. 10,000", image: "/p-inmuebles.webp" },
+  { name: "Paseo de las Palmeras",   location: "Chiclayo",  price: "S/. 10,000", image: "/p-construccion.webp" },
 ];
 
 const NavIconHome = ({ c }: { c: string }) => (
@@ -63,31 +62,35 @@ function PhoneMockup() {
         <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 0", position: "relative", zIndex: 3 }}>
           <div style={{ width: "84px", height: "22px", background: "#000", borderRadius: "11px" }} />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 20px", fontSize: "0.58rem", color: "rgba(255,255,255,0.35)", position: "relative", zIndex: 3 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 20px", fontSize: "0.58rem", color: "rgba(255,255,255,0.62)", position: "relative", zIndex: 3 }}>
           <span>9:41</span><span>●●●  100%</span>
         </div>
 
         {/* Screen content — fondo claro, como la app real */}
         <div style={{ background: "#f7f8fc", padding: "12px 14px 14px", position: "relative", overflow: "hidden" }}>
 
-          {/* Llama superhéroe — asoma en la esquina superior derecha, por encima del texto, sin fondo */}
-          <div style={{ position: "absolute", top: "-4px", right: "-6px", width: "46%", aspectRatio: "615 / 943", zIndex: 5, pointerEvents: "none" }}>
+          {/* Mascota — asoma en la esquina superior derecha, por encima del texto, sin fondo */}
+          <div style={{ position: "absolute", top: "-10px", right: "-12px", width: "42%", aspectRatio: "389 / 641", zIndex: 5, pointerEvents: "none" }}>
             <Image
-              src="/llama-cutout.png"
+              src="/hero-llama-like.webp"
               alt=""
               fill
-              sizes="170px"
-              style={{ objectFit: "contain", objectPosition: "center top" }}
+              sizes="130px"
+              style={{
+                objectFit: "contain",
+                objectPosition: "center top",
+                filter: "drop-shadow(0 10px 16px rgba(28,15,76,0.20))",
+              }}
             />
           </div>
 
           {/* Header: avatar + wordmark */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px", position: "relative", zIndex: 2 }}>
             <div style={{ width: "26px", height: "26px", borderRadius: "50%", overflow: "hidden", position: "relative", flexShrink: 0, background: "#1c0f4c" }}>
-              <Image src="/isotipo.png" alt="" fill sizes="26px" style={{ objectFit: "cover", objectPosition: "left center" }} />
+              <Image src="/isotipo.webp" alt="" fill sizes="26px" style={{ objectFit: "cover", objectPosition: "left center" }} />
             </div>
             <span style={{ fontWeight: 800, fontSize: "0.8rem", color: "#1c0f4c" }}>
-              platita<span style={{ color: "#bc45e9" }}>.pe</span>
+              platita<span style={{ color: "#a234cc" }}>.pe</span>
             </span>
           </div>
 
@@ -96,7 +99,7 @@ function PhoneMockup() {
             <p style={{ fontWeight: 900, fontSize: "1.05rem", lineHeight: 1.15, color: "#0f0a2e", margin: "0 0 2px" }}>
               Bienvenido a<br />platita.pe
             </p>
-            <p style={{ fontSize: "0.6rem", color: "rgba(15,10,46,0.42)", margin: "0 0 10px", fontWeight: 600 }}>
+            <p style={{ fontSize: "0.6rem", color: "rgba(15,10,46,0.66)", margin: "0 0 10px", fontWeight: 600 }}>
               Inversiones que Dan Gusto
             </p>
           </div>
@@ -122,9 +125,9 @@ function PhoneMockup() {
               <div style={{ padding: "4px 5px" }}>
                 <p style={{ fontSize: "0.5rem", fontWeight: 800, color: "#0f0a2e", margin: 0, lineHeight: 1.2 }}>{p.name}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: "2px", margin: "2px 0" }}>
-                  <IconPinTiny /><span style={{ fontSize: "0.44rem", color: "rgba(15,10,46,0.42)", fontWeight: 600 }}>{p.location}</span>
+                  <IconPinTiny /><span style={{ fontSize: "0.44rem", color: "rgba(15,10,46,0.66)", fontWeight: 600 }}>{p.location}</span>
                 </div>
-                <p style={{ fontSize: "0.48rem", fontWeight: 800, color: "#bc45e9", margin: 0 }}>{p.price}</p>
+                <p style={{ fontSize: "0.48rem", fontWeight: 800, color: "#a234cc", margin: 0 }}>{p.price}</p>
               </div>
             </div>
           ))}
@@ -132,10 +135,10 @@ function PhoneMockup() {
 
         {/* Saldo + chart */}
         <div style={{ borderRadius: "12px", padding: "10px 12px", background: "#ffffff", border: "1px solid rgba(28,15,76,0.08)" }}>
-          <p style={{ fontSize: "0.55rem", color: "rgba(15,10,46,0.45)", fontWeight: 600, margin: "0 0 2px" }}>Saldo en soles:</p>
+          <p style={{ fontSize: "0.55rem", color: "rgba(15,10,46,0.66)", fontWeight: 600, margin: "0 0 2px" }}>Saldo en soles:</p>
           <p style={{ fontSize: "1rem", fontWeight: 900, color: "#0f0a2e", margin: "0 0 6px" }}>S/. 45,670.80</p>
           <div style={{ display: "flex", alignItems: "flex-end", gap: "6px" }}>
-            <span style={{ fontSize: "0.42rem", color: "rgba(15,10,46,0.32)", fontWeight: 600 }}>S/2,000</span>
+            <span style={{ fontSize: "0.42rem", color: "rgba(15,10,46,0.66)", fontWeight: 600 }}>S/2,000</span>
             <svg viewBox="0 0 140 30" style={{ flex: 1, height: "26px" }} preserveAspectRatio="none">
               <polyline points="0,27 20,22 40,24 60,16 80,18 100,9 120,11 140,3" fill="none" stroke="#bc45e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               <polyline points="0,27 20,22 40,24 60,16 80,18 100,9 120,11 140,3 140,30 0,30" fill="url(#balanceGrad)" opacity="0.14" />
@@ -145,7 +148,7 @@ function PhoneMockup() {
                 </linearGradient>
               </defs>
             </svg>
-            <span style={{ fontSize: "0.42rem", color: "rgba(15,10,46,0.32)", fontWeight: 600 }}>S/15,000</span>
+            <span style={{ fontSize: "0.42rem", color: "rgba(15,10,46,0.66)", fontWeight: 600 }}>S/15,000</span>
           </div>
         </div>
       </div>
@@ -159,7 +162,7 @@ function PhoneMockup() {
           { label: "Perfil",   icon: NavIconPerfil,   active: false },
         ].map((n) => {
           const NavIcon = n.icon;
-          const color = n.active ? "#bc45e9" : "rgba(15,10,46,0.35)";
+          const color = n.active ? "#a234cc" : "rgba(15,10,46,0.66)";
           return (
             <div key={n.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
               <NavIcon c={color} />
@@ -213,7 +216,7 @@ function Toast({ icon, title, desc, accent, floatClass, style }: ToastProps) {
           </div>
           <p style={{ color: "#1c0f4c", fontWeight: 800, fontSize: "0.88rem", lineHeight: 1.25 }}>{title}</p>
         </div>
-        <p style={{ color: "rgba(8,11,30,0.5)", fontSize: "0.75rem", lineHeight: 1.45, margin: 0 }}>{desc}</p>
+        <p style={{ color: "rgba(8,11,30,0.66)", fontSize: "0.75rem", lineHeight: 1.45, margin: 0 }}>{desc}</p>
       </div>
     </div>
   );
@@ -240,7 +243,7 @@ export default function AppPreviewSection() {
           </span>
           <span
             className="text-xs font-bold px-3 py-1 rounded-full inline-block ml-2"
-            style={{ background: "rgba(188,69,233,0.10)", border: "1px solid rgba(188,69,233,0.28)", color: "#bc45e9" }}
+            style={{ background: "rgba(188,69,233,0.10)", border: "1px solid rgba(188,69,233,0.28)", color: "#a234cc" }}
           >
             Próximamente
           </span>
@@ -248,7 +251,7 @@ export default function AppPreviewSection() {
             Todo en la palma{" "}
             <span className="gradient-text">de tu mano</span>
           </h2>
-          <p className="text-base max-w-xl mx-auto" style={{ color: "rgba(8,11,30,0.50)" }}>
+          <p className="text-base max-w-xl mx-auto" style={{ color: "rgba(8,11,30,0.66)" }}>
             Una plataforma diseñada para que invertir en bienes raíces sea tan fácil como operar en línea
           </p>
         </div>
@@ -376,7 +379,7 @@ export default function AppPreviewSection() {
               style={{ background: "#ffffff", border: "1px solid #d2dcea", boxShadow: "0 1px 3px rgba(8,10,30,0.04)" }}
             >
               <p className="text-xl font-black gradient-text">{s.value}</p>
-              <p className="text-xs font-semibold mt-0.5" style={{ color: "rgba(8,11,30,0.45)" }}>{s.label}</p>
+              <p className="text-xs font-semibold mt-0.5" style={{ color: "rgba(8,11,30,0.66)" }}>{s.label}</p>
             </div>
           ))}
         </div>

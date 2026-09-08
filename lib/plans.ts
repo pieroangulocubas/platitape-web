@@ -29,3 +29,33 @@ export function getPlanForAmount(amount: number): PlanTier {
     ? PLAN_TIERS[PLAN_TIERS.length - 1]
     : PLAN_TIERS[0];
 }
+
+/* ── Slider del simulador ──────────────────────────────────────────
+ * Escala por TRAMOS: cada segmento de igual longitud en el slider
+ * corresponde a un tramo de plan. Así las etiquetas (S/10K · S/50K ·
+ * S/100K · S/500K · S/1M) caen exactamente en 0/25/50/75/100 % y
+ * arrastrar es intuitivo (cada cuarto = un plan).
+ */
+export const SLIDER_STOPS = [10_000, 50_000, 100_000, 500_000, 1_000_000];
+const SEGMENTS = SLIDER_STOPS.length - 1;
+
+/** Posición 0–1 del slider → monto (redondeado al step). */
+export function sliderPosToAmount(pos: number, step = 1000): number {
+  const p = Math.min(1, Math.max(0, pos));
+  const seg = Math.min(SEGMENTS - 1, Math.floor(p * SEGMENTS));
+  const localT = p * SEGMENTS - seg;
+  const raw = SLIDER_STOPS[seg] + localT * (SLIDER_STOPS[seg + 1] - SLIDER_STOPS[seg]);
+  return Math.round(raw / step) * step;
+}
+
+/** Monto → posición 0–1 del slider. */
+export function amountToSliderPos(amount: number): number {
+  const a = Math.min(SLIDER_STOPS[SEGMENTS], Math.max(SLIDER_STOPS[0], amount));
+  for (let i = 0; i < SEGMENTS; i++) {
+    if (a <= SLIDER_STOPS[i + 1]) {
+      const localT = (a - SLIDER_STOPS[i]) / (SLIDER_STOPS[i + 1] - SLIDER_STOPS[i]);
+      return (i + localT) / SEGMENTS;
+    }
+  }
+  return 1;
+}

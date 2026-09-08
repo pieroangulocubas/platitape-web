@@ -527,3 +527,29 @@ body {
 .sim-enter {
   animation: slide-in-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* ── Hero (diseño hero-demo1 · variante 1b) ─────────────────── */
+@keyframes hero-bob   { 0%,100% { transform: translateY(0) rotate(-0.4deg); } 50% { transform: translateY(-18px) rotate(0.4deg); } }
+@keyframes hero-flt   { 0%,100% { transform: translateY(0); }  50% { transform: translateY(-14px); } }
+@keyframes hero-flt2  { 0%,100% { transform: translateY(0); }  50% { transform: translateY(10px); } }
+@keyframes hero-spin  { to { transform: rotate(360deg); } }
+@keyframes hero-spinr { to { transform: rotate(-360deg); } }
+@keyframes hero-shim  { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+.hero-anim-bob   { animation: hero-bob 8s ease-in-out infinite; }
+.hero-anim-flt   { animation: hero-flt 6.5s ease-in-out infinite; }
+.hero-anim-flt2  { animation: hero-flt2 8s ease-in-out infinite; }
+.hero-anim-flt3  { animation: hero-flt 7s ease-in-out 0.5s infinite; }
+.hero-anim-spin  { animation: hero-spin 50s linear infinite; }
+.hero-anim-spinr { animation: hero-spinr 36s linear infinite; }
+.hero-anim-orbit { animation: hero-spin 18s linear infinite; }
+.hero-anim-shim  { background-size: 200% 100%; animation: hero-shim 7s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-anim-bob, .hero-anim-flt, .hero-anim-flt2, .hero-anim-flt3,
+  .hero-anim-spin, .hero-anim-spinr, .hero-anim-orbit, .hero-anim-shim { animation: none; }
+}
+
+/* CTA de las tarjetas de Proyectos */
+.proyecto-cta { transition: transform .2s ease, filter .2s ease; }
+.proyecto-cta:hover { transform: translateY(-2px); filter: brightness(0.96); }
