@@ -46,19 +46,12 @@ export default function HeroSection() {
         <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-8 px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:grid-cols-2 lg:gap-10 lg:px-12 lg:py-24">
           {/* ── Columna izquierda: copy (50%) ─────────────── */}
           <div>
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.7rem] font-black tracking-[0.08em]"
-              style={{ background: "rgba(188,69,233,0.10)", color: MAGENTA_TEXT }}
-            >
-              <span aria-hidden="true">🔒</span>
-              BETA PRIVADA · PRIMER GRUPO DE INVERSIONISTAS
-            </span>
             <div
-              className="mt-4 flex items-center gap-2.5 text-xs font-black tracking-[0.18em]"
+              className="flex items-center gap-2.5 text-xs font-black tracking-[0.16em]"
               style={{ color: MAGENTA_TEXT }}
             >
-              <span className="h-0.5 w-6" style={{ background: MAGENTA_TEXT }} />
-              INVERSIÓN INMOBILIARIA · PERÚ
+              <span className="h-0.5 w-6 shrink-0" style={{ background: MAGENTA_TEXT }} />
+              BETA PRIVADA · INVERSIÓN INMOBILIARIA EN PERÚ
             </div>
 
             <h1

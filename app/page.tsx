@@ -22,8 +22,8 @@ export default function Home() {
         <HeroSection />
         <ProyectosSection />
         <PlanesSection />
-        <HowItWorksSection />
         <RespaldoLegalBand />
+        <HowItWorksSection />
         <BercorpSection />
         <SimuladorSection />
         <ComparativoSection />
