@@ -81,6 +81,27 @@ export default function TerminosPage() {
         </li>
       </ul>
 
+      <h3>2.1. Régimen legal y naturaleza de las operaciones</h3>
+      <p>
+        Platita.pe opera como plataforma tecnológica y canal oficial de
+        difusión y gestión de inversiones inmobiliarias promovidas y
+        estructuradas por {COMPANY.razonSocial} y sus empresas vinculadas.
+      </p>
+      <p>
+        {COMPANY.razonSocial} no constituye un banco, financiera ni entidad de
+        intermediación financiera autorizada para la captación masiva de dinero
+        del público regulada por la Ley N.° 26702, por lo que los fondos
+        invertidos no se encuentran cubiertos por el Fondo de Seguro de Depósitos
+        (FSD).
+      </p>
+      <p>
+        Las operaciones se estructuran principalmente mediante contratos privados
+        de mutuo dinerario con garantía inmobiliaria o respaldo patrimonial
+        específico (artículos 1648 y siguientes del Código Civil peruano),
+        celebrados a plazo determinado y tasa pactada, respaldados por los
+        activos y proyectos inmobiliarios del grupo empresarial.
+      </p>
+
       <h2>3. Aceptación de los términos</h2>
       <p>
         El registro y uso de Platita.pe implica la aceptación de estos Términos y
@@ -255,28 +276,45 @@ export default function TerminosPage() {
         documentación contractual.
       </p>
 
-      <h2>12. Contrato de inversión</h2>
-      <p>Cada inversión aprobada estará sujeta a un contrato específico.</p>
+      <h2>12. Contrato de inversión y formalización</h2>
+      <p>
+        Cada inversión aprobada se formaliza a través de un Contrato de Mutuo
+        Dinerario con Garantía Inmobiliaria o el instrumento contractual que
+        corresponda a la estructura de la operación.
+      </p>
       <p>
         El contrato establecerá las condiciones particulares de la inversión,
         incluyendo, cuando corresponda:
       </p>
       <ul>
-        <li>Identificación del inversionista.</li>
-        <li>Monto invertido.</li>
-        <li>Plan seleccionado.</li>
-        <li>Proyecto relacionado.</li>
-        <li>Duración del ciclo.</li>
-        <li>Rentabilidad aplicable.</li>
-        <li>Condiciones de pago.</li>
-        <li>Condiciones de retiro.</li>
-        <li>Condiciones de reinversión.</li>
-        <li>Derechos y obligaciones de las partes.</li>
-        <li>Riesgos asociados.</li>
+        <li>Identificación completa y domicilio de las partes.</li>
+        <li>Monto del capital invertido (mutuo).</li>
+        <li>Plan de inversión seleccionado y proyecto inmobiliario de respaldo.</li>
+        <li>Tasa de rentabilidad fija aplicable y cronograma de retornos.</li>
+        <li>Duración del ciclo y fecha de vencimiento.</li>
+        <li>
+          Condiciones y cuentas bancarias para pago de intereses y devolución o
+          reinversión de capital.
+        </li>
+        <li>Garantías reales o patrimoniales asociadas al proyecto.</li>
+        <li>
+          Declaraciones y obligaciones de cumplimiento normativo (PLAFT).
+        </li>
+        <li>Riesgos informados y reconocidos.</li>
       </ul>
       <p>
-        El inversionista podrá acceder a su contrato mediante su cuenta en
-        Platita.pe.
+        <strong>Mecanismo de formalización y firma:</strong> Durante la etapa
+        inicial de operación y Private Beta, la suscripción contractual se
+        realizará mediante medios convencionales (soporte físico, legalización
+        notarial de firmas o intercambio documental fehaciente). Con el
+        despliegue progresivo de las capacidades de la plataforma y el aplicativo
+        móvil, se incorporará la firma digital o electrónica con pleno valor
+        probatorio y eficacia jurídica conforme a la Ley N.° 27269 (Ley de Firmas
+        y Certificados Digitales) y su Reglamento.
+      </p>
+      <p>
+        El inversionista podrá acceder a su contrato y constancias en formato
+        digital descargable a través de su cuenta en Platita.pe.
       </p>
 
       <h2>13. Ciclos de inversión</h2>
@@ -583,15 +621,27 @@ export default function TerminosPage() {
         permitida por la legislación aplicable.
       </p>
 
-      <h2>30. Legislación aplicable</h2>
+      <h2>30. Legislación aplicable y solución de controversias</h2>
       <p>
-        Estos Términos y Condiciones se rigen por las leyes de la República del
-        Perú.
+        Estos Términos y Condiciones, así como cualquier controversia derivada del
+        acceso o uso de la plataforma, se rigen e interpretan conforme a las leyes
+        de la República del Perú.
       </p>
       <p>
-        Cualquier controversia será atendida mediante los mecanismos establecidos
-        por la legislación peruana y, cuando corresponda, por las autoridades o
-        jurisdicciones competentes.
+        Ante cualquier desavenencia o conflicto, las partes procurarán resolverlo
+        de mutuo acuerdo o mediante los canales de conciliación extrajudicial
+        reconocidos por ley.
+      </p>
+      <p>
+        Sin perjuicio de las competencias del INDECOPI en defensa del consumidor
+        conforme al Código de Protección y Defensa del Consumidor (Ley N.°
+        29571), cualquier controversia que deba someterse a la vía judicial será
+        resuelta por los jueces y tribunales competentes de acuerdo con las
+        reglas procesales aplicables de la República del Perú. No obstante, en
+        los contratos de inversión específicos de alto patrimonio, las partes
+        podrán pactar válidamente y de común acuerdo el sometimiento facultativo
+        a arbitraje comercial de derecho ante los centros arbitrales reconocidos
+        del país.
       </p>
 
       <h2>31. Aceptación electrónica</h2>

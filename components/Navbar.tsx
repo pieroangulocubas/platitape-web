@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { navLinks } from "@/lib/navLinks";
@@ -70,15 +70,15 @@ export default function Navbar() {
           />
         </a>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Desktop & Tablet links */}
+        <div className="hidden md:flex items-center gap-2.5 lg:gap-5 xl:gap-7">
           {navLinks.map((link) => {
             const isActive = active === link.href.slice(1);
             return (
               <a
                 key={link.href}
                 href={link.href}
-                className={`group relative pb-1 text-sm font-medium transition-colors duration-200 ${
+                className={`group relative pb-1 text-xs lg:text-sm font-semibold transition-colors duration-200 ${
                   isActive ? "text-[#1c0f4c]" : "text-[rgba(15,10,46,0.66)] hover:text-[#1c0f4c]"
                 }`}
               >
@@ -98,10 +98,10 @@ export default function Navbar() {
         </div>
 
         {/* CTA */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3 shrink-0">
           <a
             href="#registro"
-            className="btn-gradient px-5 py-2 rounded-full text-sm font-bold"
+            className="btn-gradient px-3.5 py-1.5 lg:px-5 lg:py-2 rounded-full text-xs lg:text-sm font-bold"
           >
             <span>Reserva tu lugar</span>
           </a>

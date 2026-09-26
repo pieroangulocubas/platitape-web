@@ -75,7 +75,7 @@ export async function processReclamo(
   };
 
   // Inserta con reintentos ante colisión del correlativo (23505).
-  let seq = await nextDailySeq();
+  const seq = await nextDailySeq();
   let correlativo = "";
   let inserted = false;
   for (let attempt = 0; attempt < 4 && !inserted; attempt++) {

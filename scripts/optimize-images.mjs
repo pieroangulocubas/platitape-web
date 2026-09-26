@@ -29,6 +29,9 @@ const JOBS = [
   // Recorte de llama con transparencia (WebP conserva alpha)
   { in: "llama-cutout.png", out: "llama-cutout.webp", width: 800, quality: 82 },
   { in: "llama-bg.png",     out: "llama-bg.webp",     width: 480, quality: 82 },
+  // Llama voladora del hero — upscale lanczos + sharpen para nitidez
+  { in: "llama-volando.png", out: "hero-llama-volando.webp", width: 900, quality: 90, sharpen: true },
+  { in: "hero-llama-mobile.png", out: "hero-llama-mobile.webp", width: 860, quality: 88, sharpen: true },
 
   // Logo / isotipo — wordmark ancho, siempre se muestra pequeño
   { in: "isotipo.png", out: "isotipo.webp", width: 1000, quality: 88 },

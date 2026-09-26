@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect, useRef } from "react";
 
 const testimonials = [
@@ -144,7 +144,6 @@ export default function TestimonialsSection() {
       setActive((prev) => { const next = (prev + 1) % testimonials.length; go(next); return prev; });
     }, SLIDE_DURATION);
     return () => { clearInterval(id); clearTimeout(timerRef.current); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const t = testimonials[active];
@@ -191,7 +190,7 @@ export default function TestimonialsSection() {
 
           {/* Big quote mark */}
           <div className="hidden md:block" style={{ fontSize: "9rem", lineHeight: 0.75, fontFamily: "Georgia, serif", color: `rgba(${t.accentRgb},0.12)`, position: "absolute", top: "20px", left: "28px", userSelect: "none", transition: "color 0.5s" }}>
-            "
+            &ldquo;
           </div>
 
           <div className="flex flex-col md:grid md:items-center gap-6 md:gap-10" style={{ gridTemplateColumns: "1fr auto" }}>
@@ -199,7 +198,7 @@ export default function TestimonialsSection() {
             <div className="flex flex-col gap-5">
               <Stars />
               <p style={{ color: "rgba(15,10,46,0.78)", fontSize: "1.05rem", lineHeight: 1.75, fontStyle: "italic", margin: 0 }}>
-                "{t.quote}"
+                &ldquo;{t.quote}&rdquo;
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <div style={{ width: "44px", height: "44px", borderRadius: "50%", background: t.gradient, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.9rem", color: "white", flexShrink: 0, transition: "background 0.5s" }}>

@@ -1,16 +1,17 @@
-// Datos legales compartidos por las páginas /terminos, /privacidad y
-// /libro-de-reclamaciones. Los valores marcados como "[por completar]" los
-// debe confirmar el cliente antes de publicar.
+// Datos legales y corporativos compartidos por las páginas /terminos, /privacidad y
+// /libro-de-reclamaciones, conforme a la Ley N.° 29733 y Ley N.° 29571.
 
 export const COMPANY = {
   /** Razón social del titular de la plataforma. */
   razonSocial: "HOLDING BERCORP GROUP S.A.C.",
   /** Nombre comercial. */
   marca: "Platita.pe",
-  /** RUC — lo entrega el cliente. */
-  ruc: "[por completar: RUC]",
-  /** Domicilio fiscal — lo entrega el cliente. */
-  domicilio: "[por completar: domicilio fiscal en el Perú]",
+  /** RUC — Ficha RUC SUNAT 20613498878. */
+  ruc: "20613498878",
+  /** Domicilio fiscal — Ficha RUC SUNAT. */
+  domicilio: "Cal. Capellán Duarez Nro. 148, Jaén, Jaén, Cajamarca",
+  /** Partida Registral SUNARP. */
+  partidaRegistral: "11094181",
   /** Correo de contacto legal / atención al consumidor. */
   emailContacto: "legal@platita.pe",
   /** Correo del responsable de protección de datos personales. */

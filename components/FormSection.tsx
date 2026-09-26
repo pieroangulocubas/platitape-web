@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import {
   WA_BASE_URL,
   WA_CHANNEL_URL,
@@ -144,6 +144,7 @@ function LightSelect(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
 
 export default function FormSection() {
   const [form, setForm]           = useState<FormData>(INITIAL);
+  const [showLocation, setShowLocation] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState("");
@@ -204,12 +205,18 @@ export default function FormSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const base: (keyof FormData)[] = ["nombre","correo","telefono","fechaNacimiento","montoInteres"];
-    const loc: (keyof FormData)[] = form.viveExtranjero
-      ? ["ubicacionExtranjero"]
-      : ["departamento","provincia","distrito"];
-    for (const key of [...base, ...loc]) {
-      if (!form[key]) { setError("Por favor, completa todos los campos."); return; }
+    const required: (keyof FormData)[] = [
+      "nombre",
+      "correo",
+      "telefono",
+      "fechaNacimiento",
+      "montoInteres",
+    ];
+    for (const key of required) {
+      if (!form[key]) {
+        setError("Por favor, completa los campos obligatorios.");
+        return;
+      }
     }
     if (captchaRequired && !captchaToken) {
       setError("Completa la verificación de seguridad para continuar.");
@@ -349,6 +356,32 @@ export default function FormSection() {
           <p className="text-base" style={{ color: "rgba(8,11,30,0.66)" }}>
             Sin compromiso. Cupos limitados para el primer grupo de inversionistas: te avisamos antes del lanzamiento y tendrás acceso prioritario.
           </p>
+
+          {/* Badge de cupos reservados */}
+          <div
+            className="mt-5 inline-flex flex-col sm:flex-row items-center gap-2.5 px-4 py-2 rounded-2xl border"
+            style={{
+              background: "rgba(28,15,76,0.03)",
+              borderColor: "rgba(28,15,76,0.08)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold" style={{ color: "#1c0f4c" }}>
+                Private Beta Q4 2026:{" "}
+                <strong className="text-[#a234cc]">82% de cupos reservados</strong>
+              </span>
+            </div>
+            <div className="w-24 sm:w-28 h-2 rounded-full overflow-hidden bg-slate-200">
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  width: "82%",
+                  background: "linear-gradient(90deg, #6cdcff, #bc45e9)",
+                }}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Form card */}
@@ -407,69 +440,7 @@ export default function FormSection() {
               </div>
             </div>
 
-            <label className="flex items-center gap-2 text-sm" style={{ color: "#3a3357" }}>
-              <input
-                type="checkbox"
-                name="viveExtranjero"
-                checked={form.viveExtranjero}
-                onChange={handleChange}
-              />
-              Vivo fuera del Perú
-            </label>
-
-            {form.viveExtranjero ? (
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Ciudad y país de residencia *</label>
-                <div className="relative">
-                  <FieldIcon><IconPin /></FieldIcon>
-                  <LightInput
-                    type="text"
-                    name="ubicacionExtranjero"
-                    aria-label="Ciudad y país de residencia"
-                    value={form.ubicacionExtranjero}
-                    onChange={handleChange}
-                    placeholder="Ej.: Miami, Estados Unidos"
-                  />
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Departamento *</label>
-                  <div className="relative">
-                    <FieldIcon><IconBuilding /></FieldIcon>
-                    <LightSelect name="departamento" aria-label="Departamento" value={form.departamento} onChange={handleChange}>
-                      <option value="">— Selecciona tu departamento —</option>
-                      {peruData.map((d) => <option key={d.name} value={d.name}>{d.name}</option>)}
-                    </LightSelect>
-                  </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Provincia *</label>
-                    <div className="relative">
-                      <FieldIcon><IconPin /></FieldIcon>
-                      <LightSelect name="provincia" aria-label="Provincia" value={form.provincia} onChange={handleChange} disabled={!form.departamento} style={{ opacity: !form.departamento ? 0.45 : 1 }}>
-                        <option value="">— Selecciona provincia —</option>
-                        {provinces.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
-                      </LightSelect>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>Distrito *</label>
-                    <div className="relative">
-                      <FieldIcon><IconPin /></FieldIcon>
-                      <LightSelect name="distrito" aria-label="Distrito" value={form.distrito} onChange={handleChange} disabled={!form.provincia} style={{ opacity: !form.provincia ? 0.45 : 1 }}>
-                        <option value="">— Selecciona distrito —</option>
-                        {districts.map((d) => <option key={d} value={d}>{d}</option>)}
-                      </LightSelect>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
+            {/* Rango de inversión de interés — antes que la ubicación */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>¿Cuánto te interesaría invertir? *</label>
               <div className="relative">
@@ -481,6 +452,120 @@ export default function FormSection() {
                   ))}
                 </LightSelect>
               </div>
+            </div>
+
+            {/* Ubicación opcional — con incentivo de valor claro */}
+            <div className="rounded-2xl border border-dashed border-[#c8c2ec] bg-[#faf9ff] p-4 transition-all hover:border-[#bc45e9]/50">
+              <button
+                type="button"
+                onClick={() => setShowLocation((prev) => !prev)}
+                className="flex w-full items-center justify-between text-left transition-colors"
+                style={{ color: "#1c0f4c" }}
+                aria-expanded={showLocation}
+              >
+                <div className="flex items-start gap-3">
+                  <span
+                    className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: "linear-gradient(135deg, rgba(108,220,255,0.2), rgba(188,69,233,0.2))" }}
+                  >
+                    <IconPin />
+                  </span>
+                  <div>
+                    <div className="text-xs font-bold text-[#1c0f4c]">
+                      ¿Quieres prioridad en proyectos de tu zona?{" "}
+                      <span className="font-normal text-[#8a85a0]">(Opcional)</span>
+                    </div>
+                    <p className="mt-0.5 text-[0.72rem] text-[#6d678a]">
+                      Te avisamos primero cuando abramos proyectos cerca de ti y coordinamos notarías en tu ciudad.
+                    </p>
+                  </div>
+                </div>
+                <span
+                  className="ml-2 shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-extrabold transition-all"
+                  style={{
+                    background: showLocation ? "rgba(28,15,76,0.08)" : "#ffffff",
+                    color: "#a234cc",
+                    border: "1px solid rgba(28,15,76,0.12)",
+                  }}
+                >
+                  {showLocation ? "Ocultar −" : "Personalizar +"}
+                </span>
+              </button>
+
+              {showLocation && (
+                <div className="mt-4 flex flex-col gap-4 border-t border-[#e0ddf2] pt-4">
+                  <label className="flex items-center gap-2 text-xs font-semibold" style={{ color: "#3a3357" }}>
+                    <input
+                      type="checkbox"
+                      name="viveExtranjero"
+                      checked={form.viveExtranjero}
+                      onChange={handleChange}
+                    />
+                    <span>Vivo fuera del Perú</span>
+                  </label>
+
+                  {form.viveExtranjero ? (
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>
+                        Ciudad y país de residencia (opcional)
+                      </label>
+                      <div className="relative">
+                        <FieldIcon><IconPin /></FieldIcon>
+                        <LightInput
+                          type="text"
+                          name="ubicacionExtranjero"
+                          aria-label="Ciudad y país de residencia"
+                          value={form.ubicacionExtranjero}
+                          onChange={handleChange}
+                          placeholder="Ej.: Miami, Estados Unidos"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>
+                          Departamento (opcional)
+                        </label>
+                        <div className="relative">
+                          <FieldIcon><IconBuilding /></FieldIcon>
+                          <LightSelect name="departamento" aria-label="Departamento" value={form.departamento} onChange={handleChange}>
+                            <option value="">— Selecciona tu departamento (opcional) —</option>
+                            {peruData.map((d) => <option key={d.name} value={d.name}>{d.name}</option>)}
+                          </LightSelect>
+                        </div>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>
+                            Provincia (opcional)
+                          </label>
+                          <div className="relative">
+                            <FieldIcon><IconPin /></FieldIcon>
+                            <LightSelect name="provincia" aria-label="Provincia" value={form.provincia} onChange={handleChange} disabled={!form.departamento} style={{ opacity: !form.departamento ? 0.45 : 1 }}>
+                              <option value="">— Selecciona provincia —</option>
+                              {provinces.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
+                            </LightSelect>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs font-semibold tracking-wide" style={{ color: "rgba(15,10,46,0.66)" }}>
+                            Distrito (opcional)
+                          </label>
+                          <div className="relative">
+                            <FieldIcon><IconPin /></FieldIcon>
+                            <LightSelect name="distrito" aria-label="Distrito" value={form.distrito} onChange={handleChange} disabled={!form.provincia} style={{ opacity: !form.provincia ? 0.45 : 1 }}>
+                              <option value="">— Selecciona distrito —</option>
+                              {districts.map((d) => <option key={d} value={d}>{d}</option>)}
+                            </LightSelect>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* CAPTCHA — sólo se muestra si hay site key configurada */}
@@ -520,6 +605,18 @@ export default function FormSection() {
               </a>
               .
             </p>
+
+            {/* Micro-garantía de seguridad y privacidad — Recomendación Punto 2 */}
+            <div
+              className="flex items-center justify-center gap-2 text-xs pt-1"
+              style={{ color: "rgba(15,10,46,0.62)" }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span>Tus datos viajan cifrados bajo la Ley N.° 29733 · Cero spam ni llamadas molestas</span>
+            </div>
           </form>
         </div>
 

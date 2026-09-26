@@ -339,7 +339,7 @@ export default function ComparativoSection() {
 
         {/* Comparison — mobile: stacked cards, no scroll */}
         <div className="flex md:hidden flex-col gap-3" data-reveal>
-          {rows.map((row, ri) => (
+          {rows.map((row) => (
             <div
               key={row.label}
               className="rounded-2xl p-3.5"

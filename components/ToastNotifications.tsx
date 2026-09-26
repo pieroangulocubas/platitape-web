@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useSyncExternalStore } from "react";
 
 /* ── Personas (pool amplio, se barajan sin repetir) ────────────── */
 const GRADIENTS = [
@@ -87,9 +87,29 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+function subscribeReducedMotion(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener?.("change", callback);
+  return () => mq.removeEventListener?.("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function getReducedMotionServerSnapshot() {
+  return false;
+}
+
 export default function ToastNotifications() {
   const [toast, setToast] = useState<ToastItem | null>(null);
-  const [reduced, setReduced] = useState(false);
+  const reduced = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot
+  );
 
   const deckRef = useRef<number[]>([]);
   const lastUserRef = useRef<number>(-1);
@@ -101,10 +121,12 @@ export default function ToastNotifications() {
     timers.current = [];
   };
 
+  const showToastRef = useRef<() => void>(() => {});
+
   /** Índice de persona: baraja completa sin repetir; sin repetir tampoco entre barajas. */
   const nextUserIndex = useCallback(() => {
     if (deckRef.current.length === 0) {
-      let deck = shuffle(USERS.map((_, i) => i));
+      const deck = shuffle(USERS.map((_, i) => i));
       if (deck[deck.length - 1] === lastUserRef.current && deck.length > 1) {
         [deck[0], deck[deck.length - 1]] = [deck[deck.length - 1], deck[0]];
       }
@@ -133,7 +155,7 @@ export default function ToastNotifications() {
   const showToast = useCallback(() => {
     // Si la pestaña está oculta, no gastamos un evento: reintenta pronto.
     if (typeof document !== "undefined" && document.hidden) {
-      scheduleNext(showToast, 8000 + Math.random() * 12000);
+      scheduleNext(() => showToastRef.current(), 8000 + Math.random() * 12000);
       return;
     }
 
@@ -158,21 +180,19 @@ export default function ToastNotifications() {
       visibleMs + 600
     );
 
-    scheduleNext(showToast, nextDelay());
+    scheduleNext(() => showToastRef.current(), nextDelay());
   }, [nextUserIndex, nextDelay, scheduleNext]);
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const onChange = () => setReduced(mq.matches);
-    mq.addEventListener?.("change", onChange);
+    showToastRef.current = showToast;
+  }, [showToast]);
 
+  useEffect(() => {
     // Primer toast: retraso aleatorio 3.5–9.5 s.
     scheduleNext(showToast, 3500 + Math.random() * 6000);
 
     return () => {
       clearAll();
-      mq.removeEventListener?.("change", onChange);
     };
   }, [showToast, scheduleNext]);
 

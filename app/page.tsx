@@ -27,8 +27,8 @@ export default function Home() {
         <BercorpSection />
         <SimuladorSection />
         <ComparativoSection />
-        <AppPreviewSection />
         <FormSection />
+        <AppPreviewSection />
         <TestimonialsSection />
       </main>
       <Footer />

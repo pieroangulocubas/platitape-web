@@ -27,13 +27,6 @@ export default function PrivacidadPage() {
             29733, Ley de Protección de Datos Personales, su Reglamento (Decreto
             Supremo N.° 003-2013-JUS) y demás normas peruanas aplicables.
           </p>
-          <div className="legal-note">
-            Algunos datos de este documento (RUC, domicilio, plazos exactos de
-            conservación y registro del banco de datos ante la Autoridad Nacional
-            de Protección de Datos Personales) están marcados como{" "}
-            <strong>[por completar]</strong> y deben ser confirmados por Platita.pe
-            antes de la publicación.
-          </div>
         </>
       }
     >
@@ -49,10 +42,14 @@ export default function PrivacidadPage() {
         <a href={`mailto:${COMPANY.emailDatos}`}>{COMPANY.emailDatos}</a>
       </p>
       <p>
-        Platita.pe es responsable de los bancos de datos personales que genera a
-        partir del uso de la plataforma. El registro de dichos bancos ante la
-        Autoridad Nacional de Protección de Datos Personales se encuentra{" "}
-        <strong>[por completar: número de registro / en trámite]</strong>.
+        Platita.pe es responsable de los bancos de datos personales que administra
+        en el marco de la operación de su plataforma. Conforme a la normativa
+        vigente, los bancos de datos personales denominados «Usuarios y Clientes»
+        y «Prospectos Comerciales y Lista de Espera» se encuentran en trámite de
+        inscripción formal ante la Dirección de Registro Nacional y Protección
+        de Datos Personales de la Autoridad Nacional de Protección de Datos
+        Personales (ANPDP), órgano adscrito al Ministerio de Justicia y Derechos
+        Humanos (MINJUS).
       </p>
 
       <h2>2. Datos personales que recopilamos</h2>
@@ -152,70 +149,112 @@ export default function PrivacidadPage() {
 
       <h2>5. Encargados de tratamiento y terceros</h2>
       <p>
-        Para operar la plataforma utilizamos proveedores tecnológicos que
-        procesan datos por cuenta de Platita.pe y bajo obligaciones de
-        confidencialidad y seguridad:
+        Para operar la plataforma y prestar nuestros servicios utilizamos
+        proveedores tecnológicos especializados que actúan como encargados de
+        tratamiento por cuenta de Platita.pe, sujetos a estrictas obligaciones
+        contractuales de confidencialidad y medidas de seguridad digital:
       </p>
       <ul>
         <li>
-          <strong>Alojamiento y despliegue del sitio:</strong> Vercel Inc.
+          <strong>Alojamiento e infraestructura web:</strong> Vercel Inc. (San
+          Francisco, California, EE. UU.).
         </li>
         <li>
-          <strong>Base de datos y almacenamiento:</strong> Supabase.
+          <strong>Base de datos y autenticación en la nube:</strong> Supabase
+          Inc. (San Francisco, California, EE. UU. / infraestructura AWS).
         </li>
         <li>
-          <strong>Envío de correos transaccionales:</strong> Resend.
+          <strong>Envío de correos electrónicos transaccionales:</strong> Resend
+          Inc. (San Francisco, California, EE. UU.).
         </li>
         <li>
-          <strong>Protección anti-fraude / CAPTCHA:</strong> Cloudflare
-          (Turnstile).
+          <strong>Seguridad perimetral y protección anti-bots (CAPTCHA):</strong>{" "}
+          Cloudflare, Inc. (San Francisco, California, EE. UU. - Cloudflare
+          Turnstile).
         </li>
         <li>
-          <strong>Hojas de cálculo internas de seguimiento:</strong> Google
-          (Google Sheets).
+          <strong>Gestión y respaldo de registros operativos:</strong> Google
+          LLC (Mountain View, California, EE. UU. - Google Workspace y Google
+          Sheets).
         </li>
         <li>
-          <strong>Mensajería:</strong> WhatsApp, cuando decides contactarnos por
-          ese canal.
+          <strong>Comunicaciones y atención al usuario:</strong> WhatsApp LLC /
+          Meta Platforms, Inc. (Menlo Park, California, EE. UU.), cuando el
+          usuario elige voluntariamente comunicarse por dicho canal.
         </li>
         <li>
-          <strong>Analítica web:</strong> Google Analytics 4 (Google LLC), activa
-          por defecto, con IP anonimizada. Puedes desactivarla en cualquier
-          momento (ver sección 10).
+          <strong>Analítica y medición de rendimiento:</strong> Google Analytics
+          4 (Google LLC, Mountain View, California, EE. UU.), activa por
+          defecto con anonimización de dirección IP, configurable por el
+          usuario en cualquier momento (ver sección 10).
         </li>
       </ul>
       <p>
-        También podremos compartir datos con autoridades competentes cuando exista
-        un requerimiento legal, y con asesores o entidades que participen en la
-        estructuración o respaldo de una inversión, en la medida necesaria para
-        ejecutarla.
+        Asimismo, podremos compartir información estrictamente necesaria con
+        entidades financieras, notarías, registros públicos (SUNARP) o asesores
+        legales que participen en la formalización o respaldo de operaciones de
+        inversión, así como con autoridades judiciales, administrativas o
+        tributarias competentes cuando medie mandato legal u orden expresa.
       </p>
       <p>
-        No vendemos ni cedemos tus datos personales a terceros para sus propios
-        fines comerciales.
-      </p>
-
-      <h2>6. Transferencia internacional de datos</h2>
-      <p>
-        Algunos de los proveedores mencionados almacenan o procesan información en
-        servidores ubicados fuera del Perú (por ejemplo, en Estados Unidos o la
-        Unión Europea). Al aceptar esta Política, prestas tu consentimiento para
-        dicho flujo transfronterizo de datos, el cual se realiza aplicando
-        garantías de seguridad y confidencialidad conforme a la Ley N.° 29733.
+        Platita.pe <strong>no vende, alquila ni cede</strong> tus datos
+        personales a terceros para fines de publicidad no solicitada o ajena a
+        nuestros servicios.
       </p>
 
-      <h2>7. Conservación de los datos</h2>
+      <h2>6. Transferencia internacional de datos (Flujo transfronterizo)</h2>
       <p>
-        Conservamos tus datos personales mientras mantengas una cuenta o relación
-        activa con Platita.pe y, luego de ello, durante los plazos necesarios
-        para atender responsabilidades legales, contables y regulatorias, o para
-        la defensa ante eventuales reclamos.
+        Los proveedores de tecnología antes mencionados mantienen servidores y
+        centros de datos ubicados fuera de la República del Perú (principalmente
+        en los Estados Unidos de América). Al aceptar esta Política, prestas tu
+        consentimiento informado para dicho flujo transfronterizo de datos, el
+        cual se realiza bajo estándares internacionales de seguridad de la
+        información y conforme a lo previsto en el artículo 15 de la Ley N.°
+        29733 y su Reglamento.
       </p>
+
+      <h2>7. Conservación y custodia de los datos</h2>
       <p>
-        Plazos de conservación de referencia:{" "}
-        <strong>[por completar: p. ej. leads no convertidos: 24 meses; información contractual: 10 años]</strong>
-        . Cumplidos los plazos, los datos se eliminan o se anonimizan de forma
-        irreversible.
+        Conservamos tus datos personales durante el tiempo que mantengas tu
+        cuenta activa o relación de interés con Platita.pe y, con posterioridad a
+        su conclusión, por los plazos necesarios para atender eventuales
+        responsabilidades legales, civiles, comerciales, tributarias o
+        administrativas derivadas del tratamiento.
+      </p>
+      <p>Los plazos de conservación referenciales y máximos son:</p>
+      <ul>
+        <li>
+          <strong>Prospectos y registros en lista de espera (Beta Privada):</strong>{" "}
+          Hasta por veinticuatro (24) meses contados desde tu registro, última
+          interacción o manifestación de interés, salvo que ejerzas previamente
+          tu derecho de cancelación o revoques tu consentimiento.
+        </li>
+        <li>
+          <strong>Inversionistas y operaciones contractuales:</strong> Durante
+          toda la vigencia de la relación contractual y, culminada la misma, por
+          un plazo de diez (10) años, en cumplimiento del término general de
+          prescripción extintiva de acciones personales fijado en el artículo
+          2001, numeral 1 del Código Civil peruano, así como de las normativas de
+          custodia documental contable, tributaria y de Prevención del Lavado de
+          Activos y Financiamiento del Terrorismo (PLAFT / SBS / UIF-Perú).
+        </li>
+        <li>
+          <strong>Hojas de Reclamación (Libro de Reclamaciones):</strong> Por un
+          período mínimo de dos (2) años contados desde la emisión de la
+          respuesta correspondiente, conforme al Decreto Supremo N.°
+          011-2011-PCM.
+        </li>
+        <li>
+          <strong>Registros técnicos de auditoría y seguridad:</strong> Entre
+          doce (12) y veinticuatro (24) meses con el único propósito de
+          garantizar la seguridad de las transacciones y prevenir incidentes
+          cibernéticos o fraudes.
+        </li>
+      </ul>
+      <p>
+        Cumplidos los plazos indicados, los datos serán eliminados de manera
+        segura o sometidos a procesos irreversibles de disociación o
+        anonimización.
       </p>
 
       <h2>8. Seguridad de la información</h2>
