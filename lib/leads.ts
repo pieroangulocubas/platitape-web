@@ -107,7 +107,7 @@ export async function processRegistro(
         telefono: d.telefono,
         ubicacion:
           d.pais === "Perú"
-            ? `${d.distrito}, ${d.provincia}, ${d.departamento}`
+            ? [d.distrito, d.provincia, d.departamento].filter(Boolean).join(", ") || "Perú (no especificada)"
             : d.pais,
         "fecha nac.": d.fechaNacimiento,
         "monto de interés": d.montoInteres,

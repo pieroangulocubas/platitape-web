@@ -55,25 +55,29 @@ export default function HeroSection() {
             </div>
 
             <h1
-              className="mt-4 text-[2.5rem] font-black leading-[1] tracking-tight sm:mt-5 sm:text-[3.5rem] lg:mt-6 lg:text-[4rem] lg:leading-[0.96]"
+              className="mt-4 text-[2.2rem] font-black leading-[1.08] tracking-tight sm:mt-5 sm:text-[3.25rem] sm:leading-[1.04] lg:mt-6 lg:text-[3.75rem] lg:leading-[1.02]"
               style={{ color: NAVY }}
             >
-              Inversiones
-              <br />
-              que{" "}
-              <span className="relative inline-block" style={{ color: MAGENTA_TEXT }}>
-                dan gusto
-                <span
-                  aria-hidden="true"
-                  className="absolute left-0 right-0"
-                  style={{
-                    bottom: "0.04em",
-                    height: "0.14em",
-                    borderRadius: "6px",
-                    background: "linear-gradient(90deg,rgba(108,220,255,.65),rgba(188,69,233,.55))",
-                    zIndex: -1,
-                  }}
-                />
+              <span className="block">
+                Haz que tu{" "}
+                <span className="relative inline-block" style={{ color: MAGENTA_TEXT }}>
+                  platita
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-0 right-0"
+                    style={{
+                      bottom: "0.06em",
+                      height: "0.14em",
+                      borderRadius: "6px",
+                      background:
+                        "linear-gradient(90deg,rgba(108,220,255,.65),rgba(188,69,233,.55))",
+                      zIndex: -1,
+                    }}
+                  />
+                </span>
+              </span>
+              <span className="block">
+                trabaje por ti<span style={{ color: MAGENTA_TEXT }}>.</span>
               </span>
             </h1>
 
@@ -82,7 +86,7 @@ export default function HeroSection() {
               style={{ color: MUTED }}
             >
               Proyectos auditados, contratos notariales y reportes mensuales. La
-              tecnología hace el trabajo; tú ves crecer tu platita.
+              tecnología hace el trabajo; tú ves crecer tu inversión.
             </p>
 
             {/* Lista de beneficios */}
@@ -122,13 +126,16 @@ export default function HeroSection() {
             </div>
 
             {/* Respaldo del grupo */}
-            <div className="mt-6 flex items-center gap-2.5">
-              <span
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] text-[13px] font-black"
-                style={{ background: "rgba(28,15,76,0.06)", color: NAVY }}
-              >
-                B
-              </span>
+            <div className="mt-6 flex items-center gap-3">
+              <div className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-[9px] bg-[#0d091a] p-1 shadow-sm ring-1 ring-black/10">
+                <Image
+                  src="/bercorp-holding.webp"
+                  alt="Bercorp Holding Group"
+                  width={32}
+                  height={32}
+                  className="h-full w-full object-contain"
+                />
+              </div>
               <span className="text-sm font-semibold" style={{ color: MUTED }}>
                 Un proyecto de <strong style={{ color: NAVY }}>Bercorp Holding</strong>
               </span>
@@ -137,55 +144,21 @@ export default function HeroSection() {
 
           {/* ── Columna derecha: visual (50%) ─────────────── */}
 
-          {/* Móvil: busto de la llama sobre un skyline sutil, sin tarjetas */}
-          <div className="relative mx-auto mb-2 mt-6 w-[280px] pb-6 sm:w-[320px] lg:hidden">
-            {/* Siluetas de edificios detrás */}
-            <svg
-              className="pointer-events-none absolute inset-x-0 bottom-4 mx-auto"
-              width="300"
-              height="120"
-              viewBox="0 0 300 120"
-              fill="none"
-              aria-hidden="true"
-              style={{ color: NAVY }}
-            >
-              <g fill="currentColor" opacity="0.08">
-                <rect x="8" y="52" width="34" height="68" />
-                <rect x="46" y="24" width="24" height="96" />
-                <rect x="74" y="70" width="46" height="50" />
-                <rect x="196" y="60" width="42" height="60" />
-                <rect x="242" y="30" width="22" height="90" />
-                <rect x="268" y="66" width="30" height="54" />
-              </g>
-              <g fill="currentColor" opacity="0.12">
-                <rect x="128" y="8" width="40" height="112" />
-              </g>
-              <g fill="#ffffff" opacity="0.5">
-                {[0, 1, 2].map((r) =>
-                  [0, 1].map((c) => (
-                    <rect key={`${r}${c}`} x={136 + c * 14} y={20 + r * 26} width="6" height="9" />
-                  ))
-                )}
-              </g>
-            </svg>
+          {/* Móvil: solo la llama, sin skyline ni tarjetas */}
+          <div className="relative mx-auto mb-2 mt-6 w-[340px] pb-6 sm:w-[420px] lg:hidden">
             <Image
-              src="/hero-llama-movil.webp"
+              src="/hero-llama-mobile.webp"
               alt="Llama Platita"
-              width={528}
-              height={472}
+              width={860}
+              height={914}
               priority
-              sizes="320px"
+              sizes="420px"
               className="relative h-auto w-full"
-              style={{
-                filter: "drop-shadow(0 18px 24px rgba(28,15,76,.22))",
-                // difuminado sutil en el borde inferior recortado
-                maskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)",
-              }}
+              style={{ filter: "drop-shadow(0 18px 24px rgba(28,15,76,.22))" }}
             />
           </div>
 
-          {/* Desktop: composición completa (skyline + llama + aureola + 2 tarjetas).
+          {/* Desktop: composición completa (skyline + llama + aureola + tarjeta).
               Aureola centrada EXACTAMENTE en la llama (left 36%, top 50%). */}
           <div className="relative hidden lg:block lg:h-[600px]">
             {/* Siluetas de edificios detrás de todo, alineadas bajo la llama */}
@@ -283,19 +256,19 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Llama — desplazada a la izquierda: las tarjetas flotan sobre el
+            {/* Llama — desplazada a la izquierda: la tarjeta flota sobre el
                 espacio libre de la derecha, no sobre el personaje. */}
             <div
               className="absolute top-1/2"
               style={{ left: "36%", transform: "translate(-50%, -50%)" }}
             >
-              <div className="hero-anim-bob relative aspect-[389/641] w-[290px]">
+              <div className="hero-anim-bob relative aspect-[900/959] w-[540px]">
                 <Image
-                  src="/hero-llama-like.webp"
+                  src="/hero-llama-volando.webp"
                   alt="Llama Platita"
                   fill
                   priority
-                  sizes="290px"
+                  sizes="540px"
                   style={{
                     objectFit: "contain",
                     filter: "drop-shadow(0 34px 44px rgba(28,15,76,.24))",
@@ -304,20 +277,7 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Tarjeta 1 — rentabilidad · arriba a la izquierda, libre de la llama */}
-            <div
-              className="hero-anim-flt absolute -left-10 top-4 rounded-2xl bg-white px-[19px] py-[15px]"
-              style={{ border: "1px solid rgba(28,15,76,.07)", boxShadow: "0 18px 40px rgba(28,15,76,.13)" }}
-            >
-              <div className="text-xs" style={{ color: MUTED }}>
-                Rentabilidad proyectada
-              </div>
-              <div className="text-[26px] font-black" style={{ color: NAVY }}>
-                20% <span className="text-sm font-semibold" style={{ color: "#1a8f52" }}>anual</span>
-              </div>
-            </div>
-
-            {/* Tarjeta 2 — proyecto · abajo a la derecha, solo roza la base de la llama.
+            {/* Tarjeta — proyecto · abajo a la derecha, solo roza la base de la llama.
                 Versión compacta: sin fila "Demanda estimada". */}
             <div
               className="hero-anim-flt2 absolute -right-8 bottom-2 w-[258px] rounded-[18px] bg-white p-4"

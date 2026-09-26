@@ -1,4 +1,4 @@
-﻿import { ReactNode } from "react";
+import { ReactNode } from "react";
 import VslPlayer from "./VslPlayer";
 
 /* ── icons ── */
@@ -7,12 +7,6 @@ const IconUserCheck = ({ c }: { c: string }) => (
     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
     <circle cx="9" cy="7" r="4" />
     <polyline points="16 11 18 13 22 9" />
-  </svg>
-);
-const IconBuilding = ({ c }: { c: string }) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="7" width="20" height="14" rx="2" />
-    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
   </svg>
 );
 const IconArrowUpCircle = ({ c }: { c: string }) => (

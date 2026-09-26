@@ -151,21 +151,24 @@ export function validateRegistro(
 
   let pais = "Perú";
   if (viveExtranjero) {
-    if (ubicacionExtranjero.length < 2 || ubicacionExtranjero.length > 120)
+    if (ubicacionExtranjero && ubicacionExtranjero.length > 120) {
       return {
         ok: false,
-        error: "Indica tu ciudad y país de residencia.",
+        error: "Ubicación en el extranjero demasiado larga.",
         field: "ubicacionExtranjero",
       };
-    pais = ubicacionExtranjero;
+    }
+    pais = ubicacionExtranjero || "Extranjero";
   } else {
+    // Departamento, provincia y distrito son opcionales
     for (const [field, value] of [
       ["departamento", departamento],
       ["provincia", provincia],
       ["distrito", distrito],
     ] as const) {
-      if (value.length < 2 || value.length > MAX.ubicacion)
-        return { ok: false, error: `Selecciona ${field}.`, field };
+      if (value && value.length > MAX.ubicacion) {
+        return { ok: false, error: `${field} excede la longitud permitida.`, field };
+      }
     }
   }
 
