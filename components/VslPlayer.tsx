@@ -46,7 +46,7 @@ export default function VslPlayer() {
             <span className="play-ring" />
             <span className="play-ring play-ring-delay" />
             <span className="play-btn relative z-10">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="28" height="28" style={{ marginLeft: "4px" }}>
+              <svg viewBox="0 0 24 24" fill="white" width="28" height="28" style={{ marginLeft: "4px" }}>
                 <path d="M8 5v14l11-7z" />
               </svg>
             </span>

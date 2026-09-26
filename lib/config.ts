@@ -1,9 +1,11 @@
 // Central config — change these values before launch
 
-// URL canónica del sitio (sin barra final). Sobrescribible por entorno en Vercel.
+// URL canónica del sitio (sin barra final y forzando HTTPS). Sobrescribible por entorno en Vercel.
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://platita.pe"
-).replace(/\/$/, "");
+)
+  .replace(/\/$/, "")
+  .replace(/^http:\/\//i, "https://");
 
 export const WA_PHONE = "51961229836"; // reemplaza con tu número real (+51 XXX XXX XXX)
 export const WA_BASE_URL = `https://wa.me/${WA_PHONE}`;

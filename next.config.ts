@@ -8,7 +8,7 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   // Anti-clickjacking: la página no puede incrustarse en un iframe ajeno.
   { key: "X-Frame-Options", value: "DENY" },
-  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+  { key: "Content-Security-Policy", value: "upgrade-insecure-requests; frame-ancestors 'none'" },
   // No filtrar la URL completa como referer hacia otros orígenes.
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // Desactiva APIs sensibles que el sitio no usa.
