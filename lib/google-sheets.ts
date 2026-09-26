@@ -4,12 +4,13 @@ import { sheetsEnabled } from "./config";
 
 function getAuth() {
   const email = process.env.GOOGLE_SHEETS_CLIENT_EMAIL;
-  const key = process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  let key = process.env.GOOGLE_SHEETS_PRIVATE_KEY;
   if (!email || !key) {
     throw new Error(
       "Faltan GOOGLE_SHEETS_CLIENT_EMAIL / GOOGLE_SHEETS_PRIVATE_KEY en las variables de entorno."
     );
   }
+  key = key.replace(/^["']|["']$/g, "").replace(/\\n/g, "\n");
   return new google.auth.JWT({
     email,
     key,

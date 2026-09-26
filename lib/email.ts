@@ -43,8 +43,8 @@ export async function sendLeadConfirmation(
         <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:520px;margin:0 auto;color:#1c0f4c">
           <h1 style="font-size:20px;margin:0 0 12px">Hola ${first}, ¡gracias por registrarte!</h1>
           <p style="font-size:14px;line-height:1.6;color:#3a3357">
-            Recibimos tus datos. Te avisaremos por correo apenas Platita.pe esté disponible
-            en tu zona y tendrás acceso prioritario para invertir.
+            Recibimos tus datos. Guardaremos tu contacto y te avisaremos las mejores oportunidades
+            de inversión con acceso prioritario.
           </p>
           ${
             confirmUrl

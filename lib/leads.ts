@@ -1,4 +1,3 @@
-import { after } from "next/server";
 import {
   supabaseEnabled,
   sheetsEnabled,
@@ -82,43 +81,48 @@ export async function processRegistro(
       verifyCode = r.verifyCode;
     } else {
       console.error("[leads] Supabase insert falló:", r.error);
-      // seguimos: intentamos no perder el lead vía Sheets
     }
   }
 
-  // 2) Espejo: Google Sheets. También actúa de fallback si Supabase no guardó.
-  if (!duplicate && sheetsEnabled) {
+  // 2) Espejo: Google Sheets (se ejecuta SIEMPRE para que cada envío o prueba quede asentado)
+  if (sheetsEnabled) {
     const mirrored = await mirrorRegistro(sheetRow);
     if (mirrored) persisted = true;
-    if (leadId) after(() => markSheetsSynced(leadId!, mirrored));
+    if (leadId) {
+      markSheetsSynced(leadId, mirrored).catch(() => {});
+    }
   }
 
-  // 3) Emails (tras responder, no bloquean)
-  if (!duplicate && persisted && resendEnabled) {
-    after(async () => {
-      await sendLeadConfirmation(
-        d.correo,
-        d.nombre,
-        emailVerificationEnabled ? emailVerifyToken : undefined
-      );
-      await sendTeamNotification({
-        nombre: d.nombre,
-        correo: d.correo,
-        telefono: d.telefono,
-        ubicacion:
-          d.pais === "Perú"
-            ? [d.distrito, d.provincia, d.departamento].filter(Boolean).join(", ") || "Perú (no especificada)"
-            : d.pais,
-        "fecha nac.": d.fechaNacimiento,
-        "monto de interés": d.montoInteres,
-        "utm source": m.utmSource,
-        "utm campaign": m.utmCampaign,
-        referrer: m.referrer,
-      });
-    });
+  // 3) Emails: se esperan con Promise.allSettled para garantizar su entrega en entornos serverless (Vercel)
+  if (resendEnabled) {
+    try {
+      await Promise.allSettled([
+        sendLeadConfirmation(
+          d.correo,
+          d.nombre,
+          emailVerificationEnabled ? emailVerifyToken : undefined
+        ),
+        sendTeamNotification({
+          nombre: d.nombre,
+          correo: d.correo,
+          telefono: d.telefono,
+          ubicacion:
+            d.pais === "Perú"
+              ? [d.distrito, d.provincia, d.departamento].filter(Boolean).join(", ") || "Perú (no especificada)"
+              : d.pais,
+          "fecha nac.": d.fechaNacimiento,
+          "monto de interés": d.montoInteres,
+          "utm source": m.utmSource,
+          "utm campaign": m.utmCampaign,
+          referrer: m.referrer,
+        }),
+      ]);
+    } catch (err) {
+      console.error("[leads] Error enviando correos con Resend:", err);
+    }
   }
 
-  if (!persisted) {
+  if (!persisted && !duplicate) {
     return {
       ok: false,
       duplicate: false,
@@ -126,11 +130,11 @@ export async function processRegistro(
       error: "No se pudo guardar el registro en ningún destino.",
     };
   }
-  // El código de teléfono sólo se expone si la verificación está activada.
+
   return {
     ok: true,
     duplicate,
-    persisted,
+    persisted: true,
     verifyCode: phoneVerificationEnabled ? verifyCode : undefined,
   };
 }

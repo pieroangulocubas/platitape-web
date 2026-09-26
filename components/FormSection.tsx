@@ -294,9 +294,7 @@ export default function FormSection() {
               ¡Ya estás en la lista!
             </h2>
             <p className="text-lg" style={{ color: "rgba(15,10,46,0.66)" }}>
-              {verifyCode
-                ? "Último paso opcional: escríbenos por WhatsApp con tu código y aseguras acceso prioritario cuando lancemos."
-                : "Te notificaremos cuando Platita.pe esté disponible en tu zona."}
+              Guardaremos tu contacto y te avisaremos las mejores oportunidades de inversión.
             </p>
 
             {verifyCode ? (
@@ -472,11 +470,11 @@ export default function FormSection() {
                   </span>
                   <div>
                     <div className="text-xs font-bold text-[#1c0f4c]">
-                      ¿Quieres prioridad en proyectos de tu zona?{" "}
+                      ¿Quieres personalizar tu ubicación?{" "}
                       <span className="font-normal text-[#8a85a0]">(Opcional)</span>
                     </div>
                     <p className="mt-0.5 text-[0.72rem] text-[#6d678a]">
-                      Te avisamos primero cuando abramos proyectos cerca de ti y coordinamos notarías en tu ciudad.
+                      Te avisamos primero sobre oportunidades cercanas y coordinamos notarías en tu ciudad.
                     </p>
                   </div>
                 </div>
