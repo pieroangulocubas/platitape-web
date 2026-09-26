@@ -3,6 +3,7 @@ import Image from "next/image";
 /**
  * Respaldo del grupo Bercorp — 3 entidades principales con Bercorp Holding
  * en el centro, Bercorp Real Estate a la izquierda y Bercorp Capital a la derecha.
+ * Cada una con su logotipo realzado y enlace directo a su web oficial.
  */
 
 interface BusinessUnit {
@@ -15,6 +16,7 @@ interface BusinessUnit {
   logoRing?: string;
   statusText: string;
   isCenter?: boolean;
+  url: string;
 }
 
 const UNITS: BusinessUnit[] = [
@@ -22,11 +24,13 @@ const UNITS: BusinessUnit[] = [
     name: "Bercorp Real Estate",
     category: "Desarrollo Inmobiliario",
     categoryColor: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30",
-    desc: "Desarrollo, habilitación urbana y comercialización de proyectos inmobiliarios en el Perú con alta plusvalía.",
+    desc: "Desarrollo, habilitación urbana y comercialización de proyectos inmobiliarios en el Perú con alta plusvalía y respaldo en lotes.",
     logo: "/bercorp-real-state.webp",
     logoBg: "bg-white",
+    logoRing: "ring-1 ring-white/20 shadow-emerald-500/10",
     statusText: "Proyectos en ejecución",
     isCenter: false,
+    url: "https://bercorprealestate.com.pe/",
   },
   {
     name: "Holding Bercorp Group",
@@ -34,10 +38,11 @@ const UNITS: BusinessUnit[] = [
     categoryColor: "bg-amber-400/15 text-amber-300 ring-amber-400/30",
     desc: "Entidad matriz que lidera el gobierno corporativo, respalda patrimonialmente la operación y garantiza los activos del grupo.",
     logo: "/bercorp-holding.webp",
-    logoBg: "bg-[#090613]",
-    logoRing: "ring-amber-400/30",
+    logoBg: "bg-gradient-to-b from-[#181329] to-[#090613]",
+    logoRing: "ring-2 ring-amber-400/50 shadow-amber-500/20",
     statusText: "Matriz y respaldo patrimonial",
     isCenter: true,
+    url: "https://holdingbercorp.com.pe/",
   },
   {
     name: "Bercorp Capital",
@@ -46,8 +51,10 @@ const UNITS: BusinessUnit[] = [
     desc: "Gestión de capitales, estructuración financiera y colocación de fondos orientados a maximizar rentabilidad con respaldo real.",
     logo: "/bercorp-capital.webp",
     logoBg: "bg-[#9ecb28]",
+    logoRing: "ring-1 ring-lime-400/40 shadow-lime-500/10",
     statusText: "Estructuración activa",
     isCenter: false,
+    url: "https://bercorpcapital.com.pe/",
   },
 ];
 
@@ -135,36 +142,36 @@ export default function BercorpSection() {
           {UNITS.map((u) => (
             <div
               key={u.name}
-              className={`relative flex flex-col justify-between rounded-3xl p-6 backdrop-blur-md transition-all duration-300 ${
+              className={`group relative flex flex-col justify-between rounded-3xl p-6 backdrop-blur-md transition-all duration-300 ${
                 u.isCenter
-                  ? "bg-white/[0.08] ring-2 ring-amber-400/40 shadow-2xl shadow-amber-500/10 md:-translate-y-2 hover:bg-white/[0.11] hover:ring-amber-400/60"
-                  : "bg-white/[0.04] ring-1 ring-white/10 hover:bg-white/[0.07] hover:ring-white/20"
+                  ? "bg-white/[0.08] ring-2 ring-amber-400/45 shadow-2xl shadow-amber-500/15 md:-translate-y-2.5 hover:bg-white/[0.12] hover:ring-amber-400/70"
+                  : "bg-white/[0.04] ring-1 ring-white/10 hover:bg-white/[0.08] hover:ring-white/20 hover:-translate-y-1"
               }`}
             >
               {u.isCenter && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-amber-400 to-amber-200 px-3.5 py-0.5 text-[0.68rem] font-black uppercase tracking-wider text-black shadow-md">
-                  Matriz Central
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 px-4 py-1 text-[0.68rem] font-black uppercase tracking-wider text-[#140b2b] shadow-lg shadow-amber-500/30">
+                  ★ Matriz Central
                 </div>
               )}
 
               <div>
-                {/* Stage del Logo */}
+                {/* Stage del Logo — Más amplio y con realce */}
                 <div
-                  className={`relative flex h-20 w-full items-center justify-center overflow-hidden rounded-2xl p-3 shadow-md ring-1 ${
-                    u.logoRing ?? "ring-black/10"
+                  className={`relative flex h-24 w-full items-center justify-center overflow-hidden rounded-2xl p-3.5 shadow-lg transition-transform duration-300 group-hover:scale-[1.02] ${
+                    u.logoRing ?? "ring-1 ring-white/10"
                   } ${u.logoBg}`}
                 >
                   <Image
                     src={u.logo}
                     alt={u.name}
-                    width={220}
-                    height={70}
-                    className="h-full w-auto max-w-[88%] object-contain"
+                    width={240}
+                    height={80}
+                    className="h-full w-auto max-w-[90%] object-contain filter drop-shadow-sm"
                   />
                 </div>
 
                 {/* Categoría y Título */}
-                <div className="mt-6">
+                <div className="mt-5">
                   <span
                     className={`inline-block rounded-full px-3 py-0.5 text-[0.68rem] font-black uppercase tracking-wider ring-1 ${u.categoryColor}`}
                   >
@@ -182,14 +189,31 @@ export default function BercorpSection() {
                 </div>
               </div>
 
-              {/* Pie de la tarjeta: estado */}
-              <div className="mt-6 flex items-center gap-2 border-t border-white/10 pt-4 text-[0.75rem] font-semibold text-white/75">
-                <span
-                  className={`h-2 w-2 rounded-full ${
-                    u.isCenter ? "bg-amber-400" : "bg-emerald-400"
-                  } animate-pulse`}
-                />
-                <span>{u.statusText}</span>
+              {/* Pie de la tarjeta: Estado + Enlace oficial */}
+              <div className="mt-6 border-t border-white/10 pt-4">
+                <div className="flex items-center gap-2 text-[0.75rem] font-semibold text-white/75">
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      u.isCenter ? "bg-amber-400" : "bg-emerald-400"
+                    } animate-pulse`}
+                  />
+                  <span>{u.statusText}</span>
+                </div>
+
+                {/* Enlace al sitio oficial */}
+                <a
+                  href={u.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`mt-4 inline-flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition-all ${
+                    u.isCenter
+                      ? "bg-amber-400/15 text-amber-200 ring-1 ring-amber-400/35 hover:bg-amber-400/25 hover:text-white"
+                      : "bg-white/[0.06] text-white/90 ring-1 ring-white/10 hover:bg-white/[0.12] hover:text-white"
+                  }`}
+                >
+                  <span>Conocer {u.name}</span>
+                  <span className="text-sm transition-transform group-hover:translate-x-1">↗</span>
+                </a>
               </div>
             </div>
           ))}
