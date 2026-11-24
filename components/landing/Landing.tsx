@@ -37,7 +37,6 @@ export default class Landing extends React.Component<any, any> {
   static defaultProps = {
     cupos: 82,
     simuladorEstilo: "Simplificado",
-    vslUrl: "https://www.youtube-nocookie.com/embed/reGTlUyOei0",
   };
   state={dir:null,mobile:false,scrollY:0,active:"",amount:100000,months:12,heroEmail:"",f:{nombre:"",correo:"",telefono:"",monto:"",mayor:false},tried:false,loading:false,sent:false,vsl:false,kInit:500,kMon:100,kYears:5,ti:0,demo:0,pj:0,sim:false,kOpen:false,af:{nombre:"",dni:"",cel:"",correo:"",ciudad:"",cci:"",exp:"",acepta:false},afTried:false,afLoading:false,afSent:false,copied:false,wsA:0,wsB:0,narrow:false};
   componentDidMount(){
@@ -117,7 +116,6 @@ export default class Landing extends React.Component<any, any> {
     const kt=[...KTIERS].reverse().find(x=>s.kInit>=x[0])||KTIERS[0];
     const kr=kt[1]/12,kn=s.kYears*12,kg=Math.pow(1+kr,kn);
     const kFv=s.kInit*kg+s.kMon*(kg-1)/kr,kAport=s.kInit+s.kMon*kn;
-    const vu=this.props.vslUrl||"https://www.youtube.com/embed/";
     const wide=!s.mobile&&s.months===12;
     const err=this.errors(); const e=s.tried?err:{};
     const ok=!Object.values(err).some(Boolean);
@@ -140,7 +138,7 @@ export default class Landing extends React.Component<any, any> {
       planNum:tierIdx+1,planUpTo:"Hasta "+Math.round(t[1]*100)+"%",amountS:"S/ "+fmt(s.amount),earningsS:"S/ "+fmt(earnings),monthlyS:"S/ "+fmt(monthly),
       earnLabel:s.months===12?"Rentabilidad anual":"Rentabilidad total",
       bars:Array.from({length:s.months},(_,i)=>({showTop:wide,top:"S/"+fmt(monthly),label:wide?"Mes "+(i+1):String(i+1)})),
-      vslPlaying:s.vsl,vslIdle:!s.vsl,playVsl:()=>this.setState({vsl:true,vslT:0}),vslSrc:vu+(vu.includes("?")?"&":"?")+"autoplay=1&rel=0&start="+(s.vslT||0),vbAR:s.mobile?"4 / 5":"16 / 7",vbPos:s.mobile?"72% center":"center 30%",vbJust:s.mobile?"flex-end":"center",vbScrim:s.mobile?"linear-gradient(180deg,rgba(13,8,38,0) 30%,rgba(13,8,38,.85) 62%,#0d0826 100%)":"linear-gradient(90deg,rgba(13,8,38,.9) 0%,rgba(13,8,38,.55) 35%,transparent 60%)",
+      vslPlaying:s.vsl,vslIdle:!s.vsl,playVsl:()=>this.setState({vsl:true,vslT:0}),vslStart:ev=>{try{if(s.vslT)ev.currentTarget.currentTime=s.vslT;}catch(e){}},vbAR:s.mobile?"4 / 5":"16 / 7",vbPos:s.mobile?"72% center":"center 30%",vbJust:s.mobile?"flex-end":"center",vbScrim:s.mobile?"linear-gradient(180deg,rgba(13,8,38,0) 30%,rgba(13,8,38,.85) 62%,#0d0826 100%)":"linear-gradient(90deg,rgba(13,8,38,.9) 0%,rgba(13,8,38,.55) 35%,transparent 60%)",
       vsCols:s.narrow?"minmax(0,1fr)":"minmax(0,1.35fr) minmax(0,1fr)",
       goKidsSim:()=>{this.setState({kOpen:true});setTimeout(()=>this.go("kids-simulador"),60);},
       kidsPerks:["Desde S/ 500 de aporte inicial","Aportes mensuales familiares opcionales","Historial de aportes, ciclos y contratos"],
@@ -411,13 +409,13 @@ export default class Landing extends React.Component<any, any> {
     <div data-reveal="1" style={sx("position:relative;max-width:1240px;margin:0 auto")}>
       <div style={sx(`position:relative;aspect-ratio:${v.vbAR};min-height:440px;border-radius:clamp(24px,3vw,36px);overflow:hidden;background:#0d0826;box-shadow:0 40px 100px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.08)`)}>
         {v.vslPlaying ? (<>
-          <iframe src={v.vslSrc} title="Conoce Platita.pe" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen={true} style={sx("position:absolute;inset:0;width:100%;height:100%;border:0;background:#000")}></iframe>
+          <video src="/design/conocenos.mp4" poster="/design/vsl-thumb.webp" title="Conoce Platita.pe" controls={true} autoPlay={true} playsInline={true} preload="auto" onLoadedMetadata={v.vslStart} style={sx("position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000")}></video>
         </>) : null}
         {v.vslIdle ? (<>
           <img src="/design/vsl-thumb.webp" alt="" decoding="async" style={sx(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:${v.vbPos}`)} />
           <div aria-hidden="true" style={sx(`position:absolute;inset:0;background:${v.vbScrim};pointer-events:none`)}></div>
           <div style={sx(`position:absolute;inset:0;padding:clamp(24px,5vw,64px);display:flex;flex-direction:column;justify-content:${v.vbJust};max-width:640px`)}>
-            <span style={sx("align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#1c0f4c;background:#6cdcff")}>Conócenos · 1:23</span>
+            <span style={sx("align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#1c0f4c;background:#6cdcff")}>Conócenos · 1:15</span>
             <h2 style={sx("font-family:var(--font-display);margin:18px 0 0;font-size:clamp(2.2rem,5vw,4.2rem);font-weight:800;line-height:.98;letter-spacing:-0.04em;text-wrap:balance")}>Tu platita, en <span style={sx("background-image:linear-gradient(135deg,#6cdcff,#e0a6f7)")} className="gradient-text">buenas manos</span>.</h2>
             <p style={sx("margin:14px 0 0;max-width:420px;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:rgba(255,255,255,.8);text-wrap:pretty")}>Conoce quiénes somos y por qué tu platita puede rendir más.</p>
             <button onClick={v.playVsl} aria-label="Reproducir video: conoce Platita.pe" style={sx("margin-top:26px;align-self:flex-start;display:inline-flex;align-items:center;gap:14px;padding:8px 22px 8px 8px;border:0;border-radius:9999px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:900;color:#1c0f4c;background:#fff;box-shadow:0 20px 40px rgba(0,0,0,.35)")} className="dch4">
