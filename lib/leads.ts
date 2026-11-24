@@ -1,11 +1,11 @@
 import {
-  supabaseEnabled,
+  dbEnabled,
   sheetsEnabled,
   resendEnabled,
   phoneVerificationEnabled,
   emailVerificationEnabled,
 } from "./config";
-import { insertLead, markSheetsSynced, type LeadRow } from "./supabase";
+import { insertLead, markSheetsSynced, type LeadRow } from "./db";
 import { mirrorRegistro } from "./google-sheets";
 import { sendLeadConfirmation, sendTeamNotification } from "./email";
 import type { RegistroInput, LeadMeta } from "./validation";
@@ -13,7 +13,7 @@ import type { RegistroInput, LeadMeta } from "./validation";
 export interface ProcessResult {
   ok: boolean;
   duplicate: boolean;
-  /** true si el lead quedó guardado en algún lado (Supabase o Sheets). */
+  /** true si el lead quedó guardado en algún lado (base de datos o Sheets). */
   persisted: boolean;
   /** Código corto para el CTA de WhatsApp de la pantalla de éxito (Nivel 1). */
   verifyCode?: string;
@@ -39,7 +39,7 @@ export async function processRegistro(
     d.departamento,
     d.provincia,
     d.distrito,
-    d.fechaNacimiento,
+    d.fechaNacimiento || "Mayor de edad (declarado)",
     d.montoInteres,
     ...metaCells(m),
     d.pais, // columna al final para no desplazar las existentes
@@ -54,7 +54,7 @@ export async function processRegistro(
     provincia: d.provincia,
     distrito: d.distrito,
     pais: d.pais,
-    fecha_nacimiento: d.fechaNacimiento,
+    fecha_nacimiento: d.fechaNacimiento || null,
     monto_interes: d.montoInteres,
     mensaje: null,
     utm_source: m.utmSource || null,
@@ -70,8 +70,8 @@ export async function processRegistro(
   let emailVerifyToken: string | undefined;
   let verifyCode: string | undefined;
 
-  // 1) Fuente de verdad: Supabase
-  if (supabaseEnabled) {
+  // 1) Fuente de verdad: Postgres (Neon)
+  if (dbEnabled) {
     const r = await insertLead(dbRow);
     if (r.ok) {
       persisted = true;
@@ -80,7 +80,7 @@ export async function processRegistro(
       emailVerifyToken = r.emailVerifyToken;
       verifyCode = r.verifyCode;
     } else {
-      console.error("[leads] Supabase insert falló:", r.error);
+      console.error("[leads] insert en la base falló:", r.error);
     }
   }
 
@@ -110,7 +110,7 @@ export async function processRegistro(
             d.pais === "Perú"
               ? [d.distrito, d.provincia, d.departamento].filter(Boolean).join(", ") || "Perú (no especificada)"
               : d.pais,
-          "fecha nac.": d.fechaNacimiento,
+          "fecha nac.": d.fechaNacimiento || "Mayor de edad (declarado)",
           "monto de interés": d.montoInteres,
           "utm source": m.utmSource,
           "utm campaign": m.utmCampaign,

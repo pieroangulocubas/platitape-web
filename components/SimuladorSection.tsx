@@ -345,7 +345,7 @@ export default function SimuladorSection() {
         </div>
 
         <p className="text-center text-xs mt-6" style={{ color: "rgba(15,10,46,0.66)" }}>
-          *Estimación referencial al {Math.round(plan.rate * 100)}% anual ({plan.label} · hasta {Math.round(MAX_RATE * 100)}% en Plan {PLAN_TIERS[PLAN_TIERS.length - 1].id}).
+          *Estimación referencial al {Math.round(plan.rate * 100)}% anual ({plan.label} · hasta {Math.round(MAX_RATE * 100)}% en el {PLAN_TIERS[PLAN_TIERS.length - 1].label}).
           <strong> No constituye una promesa ni garantía de rentabilidad.</strong>
           {" "}Al subir de categoría, tu saldo se consolida en un nuevo contrato de 12 meses. Respaldo legal: Contrato mutuo.
         </p>

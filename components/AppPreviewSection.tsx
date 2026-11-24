@@ -1,11 +1,13 @@
+"use client";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * App Preview — Rediseño integral con proporciones exactas de iPhone 16 Pro (19.5:9)
  * - Smartphone con chasis de titanio espacial, relación de aspecto física 1:2.09 (270px × 565px).
  * - Dynamic Island auténtica con lente frontal y sensor de privacidad.
  * - Pantalla completa con distribución de espacio equilibrada y estética iOS nativa.
- * - Mobile: Montaje de llama-presenta-mobile.webp asomándose en el marco superior y señalando hacia abajo.
+ * - Mobile: Montaje de llama-asomada.webp asomándose en el marco superior y señalando hacia abajo.
  * - Desktop: Llama superhéroe de cuerpo entero (llama-presenta.webp) presentando hacia la derecha.
  * - Sin líneas de corte: bordes desvanecidos orgánicamente.
  * - Sin badge redundante del 20% en el interior.
@@ -48,7 +50,8 @@ const IconPinTiny = () => (
   </svg>
 );
 
-function PhoneMockup() {
+/** screen: 0 dashboard · 1 alerta de abono · 2 garantía · 3 reinversión/retiro */
+function PhoneMockup({ screen = 0 }: { screen?: number }) {
   return (
     <div className="relative flex justify-center">
       {/* Sombra de contacto suave bajo el iPhone */}
@@ -283,7 +286,12 @@ function PhoneMockup() {
           </div>
 
           {/* ── Cuerpo del App (Fintech Platita) con proporciones nativas ── */}
-          <div style={{ padding: "0 12px", position: "relative", zIndex: 10, flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-around" }}>
+          <div style={{ position: "relative", zIndex: 10, flex: 1, display: "flex", flexDirection: "column" }}>
+          <div
+            className="demo-screen"
+            style={{ padding: "0 12px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-around", opacity: screen <= 1 ? 1 : 0, transform: screen <= 1 ? "none" : "translateX(-12px)" }}
+            aria-hidden={screen > 1}
+          >
 
             {/* Header usuario */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "2px 0 4px" }}>
@@ -484,6 +492,10 @@ function PhoneMockup() {
             </div>
 
           </div>
+          {screen === 1 && <AlertBanner />}
+          <DemoScreen show={screen === 2}><GarantiaScreen /></DemoScreen>
+          <DemoScreen show={screen === 3}><RetiroScreen /></DemoScreen>
+          </div>
 
           {/* ── Bottom Tab Bar iOS + Home Indicator ── */}
           <div
@@ -497,9 +509,9 @@ function PhoneMockup() {
           >
             <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", padding: "0 4px 4px" }}>
               {[
-                { label: "Inicio",   icon: NavIconHome,     active: true },
-                { label: "Invertir", icon: NavIconInvertir, active: false },
-                { label: "Cartera",  icon: NavIconCartera,  active: false },
+                { label: "Inicio",   icon: NavIconHome,     active: screen <= 1 },
+                { label: "Invertir", icon: NavIconInvertir, active: screen === 3 },
+                { label: "Cartera",  icon: NavIconCartera,  active: screen === 2 },
                 { label: "Perfil",   icon: NavIconPerfil,   active: false },
               ].map((n) => {
                 const NavIcon = n.icon;
@@ -525,9 +537,170 @@ function PhoneMockup() {
   );
 }
 
+/* ── Pantallas del feature demo (se superponen al dashboard) ── */
+
+function DemoScreen({ show, children }: { show: boolean; children: React.ReactNode }) {
+  return (
+    <div
+      className="demo-screen"
+      style={{
+        position: "absolute",
+        inset: 0,
+        padding: "4px 12px 8px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        background: "#f8f9fc",
+        opacity: show ? 1 : 0,
+        transform: show ? "none" : "translateX(12px)",
+        pointerEvents: show ? "auto" : "none",
+      }}
+      aria-hidden={!show}
+    >
+      {children}
+    </div>
+  );
+}
+
+const demoTitle: React.CSSProperties = { fontSize: "0.78rem", fontWeight: 900, color: "#1c0f4c", margin: "4px 0 0" };
+const demoCard: React.CSSProperties = {
+  background: "#ffffff",
+  borderRadius: "14px",
+  border: "1px solid rgba(28,15,76,0.08)",
+  boxShadow: "0 4px 12px rgba(28,15,76,0.06)",
+  padding: "10px",
+};
+const demoRow: React.CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: "1px solid rgba(28,15,76,0.06)" };
+const demoLabel: React.CSSProperties = { fontSize: "0.48rem", color: "rgba(15,10,46,0.6)", fontWeight: 600 };
+const demoValue: React.CSSProperties = { fontSize: "0.5rem", color: "#1c0f4c", fontWeight: 800 };
+const demoBtn: React.CSSProperties = {
+  marginTop: "auto",
+  textAlign: "center",
+  fontSize: "0.56rem",
+  fontWeight: 800,
+  color: "#ffffff",
+  padding: "9px 0",
+  borderRadius: "9999px",
+  background: "linear-gradient(135deg,#6cdcff,#bc45e9)",
+};
+
+/** Notificación iOS de abono mensual sobre el dashboard. */
+function AlertBanner() {
+  return (
+    <div
+      className="demo-banner-drop"
+      style={{
+        position: "absolute",
+        top: "2px",
+        left: "8px",
+        right: "8px",
+        zIndex: 30,
+        display: "flex",
+        gap: "8px",
+        alignItems: "flex-start",
+        padding: "9px 10px",
+        borderRadius: "16px",
+        background: "rgba(255,255,255,0.96)",
+        backdropFilter: "blur(10px)",
+        boxShadow: "0 10px 28px rgba(28,15,76,0.22)",
+        border: "1px solid rgba(28,15,76,0.06)",
+      }}
+    >
+      <div style={{ width: "24px", height: "24px", borderRadius: "7px", flexShrink: 0, background: "linear-gradient(135deg,#6cdcff,#bc45e9)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "0.62rem", fontWeight: 900 }}>
+        P
+      </div>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: "6px" }}>
+          <span style={{ fontSize: "0.5rem", fontWeight: 800, color: "#1c0f4c" }}>Platita.pe</span>
+          <span style={{ fontSize: "0.44rem", color: "rgba(15,10,46,0.5)" }}>ahora</span>
+        </div>
+        <p style={{ fontSize: "0.52rem", fontWeight: 800, color: "#1c0f4c", margin: "1px 0 0" }}>💸 Abono recibido: S/ 116.67</p>
+        <p style={{ fontSize: "0.46rem", color: "rgba(15,10,46,0.66)", margin: "1px 0 0" }}>
+          Tu rendimiento mensual del Plan Inicial ya está en tu cuenta.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function GarantiaScreen() {
+  return (
+    <>
+      <p style={demoTitle}>Mi contrato</p>
+      <div style={demoCard}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: "26px", height: "26px", borderRadius: "8px", background: "rgba(16,185,129,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem" }}>📄</div>
+            <div>
+              <p style={{ fontSize: "0.54rem", fontWeight: 900, color: "#1c0f4c", margin: 0 }}>Contrato de mutuo</p>
+              <p style={{ fontSize: "0.44rem", color: "rgba(15,10,46,0.55)", margin: 0 }}>Con validación notarial</p>
+            </div>
+          </div>
+          <span style={{ fontSize: "0.44rem", fontWeight: 800, color: "#047857", background: "rgba(16,185,129,0.12)", padding: "3px 7px", borderRadius: "9999px" }}>Firmado ✓</span>
+        </div>
+        <div style={demoRow}><span style={demoLabel}>Monto</span><span style={demoValue}>S/ 10,000.00</span></div>
+        <div style={demoRow}><span style={demoLabel}>Plazo</span><span style={demoValue}>12 meses</span></div>
+        <div style={demoRow}><span style={demoLabel}>Partida SUNARP</span><span style={demoValue}>11094181</span></div>
+        <div style={{ ...demoRow, borderBottom: "none" }}><span style={demoLabel}>Garantía</span><span style={demoValue}>Lotes · Condominio Los Andes</span></div>
+      </div>
+      <div style={{ ...demoCard, display: "flex", alignItems: "center", gap: "8px", background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.25)" }}>
+        <span style={{ fontSize: "0.8rem" }}>🛡️</span>
+        <p style={{ fontSize: "0.47rem", color: "#065f46", fontWeight: 700, margin: 0 }}>
+          Tu inversión está respaldada por activos inmobiliarios inscritos en registros públicos.
+        </p>
+      </div>
+      <div style={demoBtn}>Descargar contrato (PDF)</div>
+    </>
+  );
+}
+
+function RetiroScreen() {
+  return (
+    <>
+      <p style={demoTitle}>Reinvierte o retira</p>
+      <div style={{ ...demoCard, background: "linear-gradient(135deg,#1c0f4c,#4a1d8f)", border: "none" }}>
+        <p style={{ fontSize: "0.46rem", color: "rgba(255,255,255,0.7)", margin: 0, fontWeight: 700 }}>Ganancias disponibles</p>
+        <p style={{ fontSize: "1.05rem", color: "#ffffff", margin: "2px 0 0", fontWeight: 900 }}>S/ 1,400.00</p>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px" }}>
+        <div style={{ ...demoCard, border: "1.5px solid #bc45e9", padding: "8px" }}>
+          <p style={{ fontSize: "0.54rem", fontWeight: 900, color: "#a234cc", margin: 0 }}>Reinvertir</p>
+          <p style={{ fontSize: "0.44rem", color: "rgba(15,10,46,0.6)", margin: "2px 0 0" }}>Suma a tu capital y sube de plan</p>
+        </div>
+        <div style={{ ...demoCard, padding: "8px" }}>
+          <p style={{ fontSize: "0.54rem", fontWeight: 900, color: "#1c0f4c", margin: 0 }}>Retirar</p>
+          <p style={{ fontSize: "0.44rem", color: "rgba(15,10,46,0.6)", margin: "2px 0 0" }}>Directo a tu cuenta bancaria</p>
+        </div>
+      </div>
+      <div style={demoCard}>
+        <p style={{ ...demoLabel, margin: "0 0 6px" }}>Banco de destino</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+          {["BCP", "BBVA", "Interbank", "Scotiabank"].map((b, i) => (
+            <span
+              key={b}
+              style={{
+                fontSize: "0.46rem",
+                fontWeight: 800,
+                padding: "4px 8px",
+                borderRadius: "9999px",
+                color: i === 0 ? "#ffffff" : "#1c0f4c",
+                background: i === 0 ? "#1c0f4c" : "#f1eff9",
+              }}
+            >
+              {b}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div style={demoBtn}>Confirmar</div>
+    </>
+  );
+}
+
 const previewFeatures = [
   {
     title: "Dashboard en tiempo real",
+    short: "Dashboard",
     desc: "Monitorea tus rendimientos, abonos y proyecciones actualizadas al segundo.",
     accent: "#6cdcff",
     icon: (
@@ -539,6 +712,7 @@ const previewFeatures = [
   },
   {
     title: "Alertas inteligentes de abono",
+    short: "Alertas",
     desc: "Notificaciones inmediatas cuando tus ganancias mensuales caen a tu cuenta.",
     accent: "#bc45e9",
     icon: (
@@ -549,6 +723,7 @@ const previewFeatures = [
   },
   {
     title: "Garantía Notarial y SUNARP",
+    short: "Garantía",
     desc: "Contrato de mutuo legalizado con partida registral 11094181 y respaldo en lotes.",
     accent: "#10b981",
     icon: (
@@ -560,6 +735,7 @@ const previewFeatures = [
   },
   {
     title: "Reinversión y retiros ágiles",
+    short: "Retiros",
     desc: "Abonos directos a tus cuentas en BCP, BBVA, Interbank o Scotiabank sin fricción.",
     accent: "#f59e0b",
     icon: (
@@ -571,10 +747,54 @@ const previewFeatures = [
 ];
 
 export default function AppPreviewSection() {
+  const [active, setActive] = useState(0);
+  const [autoplay, setAutoplay] = useState(true);
+  const blockRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const mobileRef = useRef<HTMLDivElement>(null);
+
+  // Desktop: el bloque que cruza la franja central de la pantalla define la pantalla del iPhone.
+  useEffect(() => {
+    const els = blockRefs.current.filter((el): el is HTMLDivElement => el !== null);
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.index));
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  // Móvil: avance automático mientras el demo está en vista (se detiene al tocar una pestaña).
+  useEffect(() => {
+    const el = mobileRef.current;
+    if (!el || !autoplay || window.matchMedia("(min-width: 768px), (prefers-reduced-motion: reduce)").matches) return;
+    let timer: ReturnType<typeof setInterval> | undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !timer) {
+          timer = setInterval(() => setActive((a) => (a + 1) % previewFeatures.length), 3500);
+        } else if (!entry.isIntersecting && timer) {
+          clearInterval(timer);
+          timer = undefined;
+        }
+      },
+      { threshold: 0.3 }
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      if (timer) clearInterval(timer);
+    };
+  }, [autoplay]);
+
   return (
     <section
       id="app"
-      className="relative py-16 md:py-24 px-4 overflow-hidden"
+      className="relative py-16 md:py-24 px-4 overflow-x-clip"
       style={{
         background:
           "radial-gradient(ellipse at 50% 0%, rgba(108,220,255,0.15) 0%, transparent 60%), radial-gradient(ellipse at 85% 65%, rgba(188,69,233,0.12) 0%, transparent 60%), radial-gradient(ellipse at 15% 80%, rgba(108,220,255,0.10) 0%, transparent 55%), #ffffff",
@@ -623,10 +843,14 @@ export default function AppPreviewSection() {
           </p>
         </div>
 
-        {/* ── STAGE CENTRAL: Llama Superhéroe + iPhone 16 Pro Mockup (19.5:9) ── */}
+        {/* ── FEATURE DEMO ──
+            Móvil (< md): llama asomada + iPhone; las pestañas bajo el teléfono cambian la pantalla
+            (avanzan solas mientras la sección está en vista, hasta que el usuario toca una).
+            Tablet/desktop (>= md): el iPhone queda fijo (sticky) y cada bloque de texto que entra
+            en vista cambia la pantalla del teléfono. */}
 
-        {/* MÓVIL (< md): Montaje de Llama peeking sobre el marco superior del iPhone señalando hacia la pantalla */}
-        <div className="flex flex-col items-center justify-center md:hidden my-2 relative">
+        {/* MÓVIL */}
+        <div ref={mobileRef} className="flex flex-col items-center justify-center md:hidden my-2 relative">
           {/* Aura sutil ambiental */}
           <div
             className="absolute pointer-events-none"
@@ -639,14 +863,44 @@ export default function AppPreviewSection() {
             }}
           />
 
-          {/* Llama asomándose sobre el marco superior: sin líneas de corte, apoyando la pata y señalando hacia abajo */}
-          <div className="relative z-20 -mb-9 sm:-mb-10 w-[248px] sm:w-[268px] aspect-[484/442]">
+          {/* Pestañas del demo */}
+          <div className="relative z-30 mb-6 w-full max-w-sm" role="tablist" aria-label="Funciones de la app">
+            <div className="grid grid-cols-4 gap-1.5 p-1.5 rounded-2xl" style={{ background: "#f1eff9" }}>
+              {previewFeatures.map((f, i) => (
+                <button
+                  key={f.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={active === i}
+                  onClick={() => {
+                    setAutoplay(false);
+                    setActive(i);
+                  }}
+                  className="py-2 rounded-xl text-[0.7rem] font-bold transition-all"
+                  style={{
+                    background: active === i ? "#ffffff" : "transparent",
+                    color: active === i ? "#1c0f4c" : "rgba(15,10,46,0.6)",
+                    boxShadow: active === i ? "0 2px 8px rgba(28,15,76,0.10)" : "none",
+                  }}
+                >
+                  {f.short}
+                </button>
+              ))}
+            </div>
+            <div key={active} className="world-step-in mt-4 text-center px-2" role="tabpanel">
+              <h3 className="text-base font-black" style={{ color: "#1c0f4c" }}>{previewFeatures[active].title}</h3>
+              <p className="text-sm mt-1 leading-relaxed" style={{ color: "rgba(8,11,30,0.66)" }}>{previewFeatures[active].desc}</p>
+            </div>
+          </div>
+
+          {/* Llama asomándose sobre el marco superior, apoyando las manos y señalando la pantalla */}
+          <div className="relative z-20 -mb-4 w-[248px] aspect-[523/477]">
             <Image
-              src="/llama-presenta-mobile.webp"
+              src="/llama-asomada.webp"
               alt="Llama Platita señalando la aplicación móvil"
               fill
               priority
-              sizes="(max-width: 640px) 248px, 268px"
+              sizes="248px"
               style={{
                 objectFit: "contain",
                 filter: "drop-shadow(0 14px 22px rgba(28,15,76,0.20))",
@@ -654,76 +908,84 @@ export default function AppPreviewSection() {
             />
           </div>
 
-          {/* iPhone 16 Pro realista debajo de la llama */}
           <div className="relative z-10">
-            <PhoneMockup />
+            <PhoneMockup screen={active} />
           </div>
+
         </div>
 
-        {/* TABLET Y DESKTOP (>= md): Llama de cuerpo entero a la izquierda presentando hacia el iPhone a la derecha */}
-        <div className="hidden md:flex flex-row items-center justify-center gap-8 lg:gap-14 my-6 relative">
-          {/* Aura central grande */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "80%",
-              maxWidth: "820px",
-              height: "500px",
-              background: "radial-gradient(ellipse, rgba(108,220,255,0.24) 0%, rgba(188,69,233,0.22) 45%, transparent 70%)",
-              filter: "blur(50px)",
-            }}
-          />
+        {/* TABLET Y DESKTOP */}
+        <div className="hidden md:grid grid-cols-[1fr_auto] gap-10 lg:gap-14 mt-4 relative">
+          {/* Bloques de texto: el que cruza el centro de la pantalla manda */}
+          <div className="py-[12vh]">
+            {previewFeatures.map((f, i) => (
+              <div
+                key={f.title}
+                ref={(el) => {
+                  blockRefs.current[i] = el;
+                }}
+                data-index={i}
+                className="min-h-[62vh] flex items-center"
+              >
+                <div
+                  className="rounded-3xl p-7 lg:p-8 transition-all duration-500 max-w-md"
+                  style={{
+                    background: active === i ? "#ffffff" : "transparent",
+                    border: `1px solid ${active === i ? "#d2dcea" : "transparent"}`,
+                    boxShadow: active === i ? "0 18px 50px rgba(28,15,76,0.10)" : "none",
+                    opacity: active === i ? 1 : 0.4,
+                    transform: active === i ? "none" : "scale(0.97)",
+                  }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
+                    style={{ background: `${f.accent}14`, border: `1px solid ${f.accent}30` }}
+                  >
+                    {f.icon}
+                  </div>
+                  <p className="text-xs font-black tracking-widest uppercase mb-1.5" style={{ color: "#a234cc" }}>
+                    {String(i + 1).padStart(2, "0")} · {f.short}
+                  </p>
+                  <h3 className="text-2xl lg:text-3xl font-black mb-2" style={{ color: "#1c0f4c" }}>{f.title}</h3>
+                  <p className="text-base leading-relaxed" style={{ color: "rgba(8,11,30,0.66)" }}>{f.desc}</p>
+                  <div className="w-10 h-1 rounded-full mt-5" style={{ background: f.accent }} />
+                </div>
+              </div>
+            ))}
+          </div>
 
-          {/* Llama Superhéroe de pie a cuerpo completo presentando con ambas manos hacia la derecha (más grande y protagónica) */}
-          <div className="relative flex flex-col items-center z-10 shrink-0">
-            <div className="relative w-[320px] md:w-[350px] lg:w-[410px] aspect-[408/612]">
-              <Image
-                src="/llama-presenta.png"
-                alt="Llama Superhéroe Platita presentando la aplicación"
-                fill
-                priority
-                sizes="(max-width: 1024px) 350px, 410px"
+          {/* Escenario fijo: llama (lg+) presentando + iPhone */}
+          <div className="relative">
+            <div className="sticky top-[max(88px,calc(50vh-282px))] flex items-end">
+              <div
+                className="absolute pointer-events-none"
                 style={{
-                  objectFit: "contain",
-                  filter: "drop-shadow(0 20px 32px rgba(188,69,233,0.28)) drop-shadow(0 10px 18px rgba(28,15,76,0.16))",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "620px",
+                  height: "520px",
+                  background: "radial-gradient(ellipse, rgba(108,220,255,0.24) 0%, rgba(188,69,233,0.22) 45%, transparent 70%)",
+                  filter: "blur(50px)",
                 }}
               />
-            </div>
-          </div>
-
-          {/* iPhone 16 Pro Mockup a la derecha */}
-          <div className="relative z-10 shrink-0">
-            <PhoneMockup />
-          </div>
-        </div>
-
-        {/* ── 4 Feature Cards con diseño contemporáneo ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-16 max-w-5xl mx-auto">
-          {previewFeatures.map((f) => (
-            <div
-              key={f.title}
-              className="flex flex-col justify-between rounded-2xl p-5 bg-white border border-[#d2dcea] shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
-            >
-              <div>
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-3.5"
-                  style={{ background: `${f.accent}14`, border: `1px solid ${f.accent}30` }}
-                >
-                  {f.icon}
-                </div>
-                <h3 className="text-sm font-bold mb-1.5" style={{ color: "#1c0f4c" }}>
-                  {f.title}
-                </h3>
-                <p className="text-xs leading-relaxed" style={{ color: "rgba(8,11,30,0.66)" }}>
-                  {f.desc}
-                </p>
+              <div className="hidden lg:block relative z-10 shrink-0 -mr-6 w-[230px] aspect-[408/612]">
+                <Image
+                  src="/llama-presenta.png"
+                  alt="Llama Superhéroe Platita presentando la aplicación"
+                  fill
+                  sizes="230px"
+                  style={{
+                    objectFit: "contain",
+                    filter: "drop-shadow(0 20px 32px rgba(188,69,233,0.28)) drop-shadow(0 10px 18px rgba(28,15,76,0.16))",
+                  }}
+                />
               </div>
-              <div className="w-8 h-1 rounded-full mt-4" style={{ background: f.accent }} />
+              <div className="relative z-10 shrink-0">
+                <PhoneMockup screen={active} />
+              </div>
             </div>
-          ))}
+          </div>
         </div>
 
         {/* ── Stats row ── */}

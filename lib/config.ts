@@ -25,18 +25,11 @@ export const WA_CONTACT_URL = `${WA_BASE_URL}?text=${WA_CONTACT_MSG}`;
  * (2026). Ver .env.example.
  * ──────────────────────────────────────────────────────────── */
 
-// --- Supabase (fuente de verdad) -----------------------------------------
-// https://supabase.com/docs/guides/api/api-keys
-export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-export const SUPABASE_SECRET_KEY =
-  process.env.SUPABASE_SECRET_KEY ?? // clave nueva sb_secret_...
-  process.env.SUPABASE_SERVICE_ROLE_KEY ?? // clave legacy (deprecada fin 2026)
-  "";
-export const NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-  "";
-export const supabaseEnabled = Boolean(SUPABASE_URL && SUPABASE_SECRET_KEY);
+// --- Base de datos: Postgres en Neon (fuente de verdad) -------------------
+// Cadena de conexión "pooled" de Neon (Dashboard → Connect). SÓLO servidor.
+// https://neon.com/docs/serverless/serverless-driver
+export const DATABASE_URL = process.env.DATABASE_URL ?? "";
+export const dbEnabled = Boolean(DATABASE_URL);
 
 // --- Cloudflare Turnstile (CAPTCHA) ------------------------------------
 // https://developers.cloudflare.com/turnstile/get-started/server-side-validation/

@@ -1,6 +1,6 @@
 import { after } from "next/server";
-import { supabaseEnabled, resendEnabled } from "./config";
-import { getSupabaseAdmin } from "./supabase";
+import { dbEnabled, resendEnabled } from "./config";
+import { getSql, pgErrorCode } from "./db";
 import { sendReclamoAck, sendReclamoNotification } from "./email";
 import type { ReclamoInput } from "./validation";
 
@@ -29,31 +29,33 @@ function buildCorrelativo(seq: number): string {
   return `LR-${ymd}-${pad(seq)}`;
 }
 
+/**
+ * Siguiente número del día (UTC), atómico: dos reclamos simultáneos nunca
+ * reciben el mismo correlativo. Usa la tabla `reclamos_contador`.
+ */
 async function nextDailySeq(): Promise<number> {
-  const supabase = getSupabaseAdmin();
-  const start = new Date();
-  start.setUTCHours(0, 0, 0, 0);
-  const { count } = await supabase
-    .from("reclamos")
-    .select("id", { count: "exact", head: true })
-    .gte("created_at", start.toISOString());
-  return (count ?? 0) + 1;
+  const rows = await getSql()`
+    insert into public.reclamos_contador (dia, ultimo)
+    values ((now() at time zone 'utc')::date, 1)
+    on conflict (dia) do update set ultimo = public.reclamos_contador.ultimo + 1
+    returning ultimo`;
+  return Number(rows[0].ultimo);
 }
 
 /**
- * Registra una hoja de reclamación: la guarda en Supabase (fuente de verdad),
+ * Registra una hoja de reclamación: la guarda en Postgres (fuente de verdad),
  * genera el correlativo y, tras responder, envía la copia al consumidor y el
- * aviso al equipo. No lanza si Supabase no está configurado (devuelve error).
+ * aviso al equipo. No lanza si la base no está configurada (devuelve error).
  */
 export async function processReclamo(
   d: ReclamoInput,
   m: ReclamoMeta
 ): Promise<ReclamoResult> {
-  if (!supabaseEnabled) {
+  if (!dbEnabled) {
     return { ok: false, error: "El Libro de Reclamaciones no está disponible temporalmente." };
   }
 
-  const supabase = getSupabaseAdmin();
+  const sql = getSql();
 
   const rowBase = {
     consumidor_nombre: d.consumidorNombre,
@@ -74,27 +76,33 @@ export async function processReclamo(
     user_agent: m.userAgent || null,
   };
 
-  // Inserta con reintentos ante colisión del correlativo (23505).
-  const seq = await nextDailySeq();
+  // El correlativo sale de un contador atómico; el reintento solo cubre el
+  // caso raro de choque con un correlativo antiguo (23505 = unique_violation).
   let correlativo = "";
   let inserted = false;
-  for (let attempt = 0; attempt < 4 && !inserted; attempt++) {
-    correlativo =
-      attempt < 3
-        ? buildCorrelativo(seq + attempt)
-        : buildCorrelativo(Math.floor(1000 + Math.random() * 9000));
-    const { error } = await supabase
-      .from("reclamos")
-      .insert({ ...rowBase, correlativo })
-      .select("id")
-      .single();
-    if (!error) {
+  for (let attempt = 0; attempt < 3 && !inserted; attempt++) {
+    try {
+      correlativo = buildCorrelativo(await nextDailySeq());
+      const r = { ...rowBase, correlativo };
+      await sql`
+        insert into public.reclamos (
+          correlativo, consumidor_nombre, tipo_documento, numero_documento,
+          domicilio, correo, telefono, es_menor, apoderado_nombre, bien_tipo,
+          bien_descripcion, monto_reclamado, tipo_solicitud, detalle, pedido,
+          ip, user_agent
+        ) values (
+          ${r.correlativo}, ${r.consumidor_nombre}, ${r.tipo_documento},
+          ${r.numero_documento}, ${r.domicilio}, ${r.correo}, ${r.telefono},
+          ${r.es_menor}, ${r.apoderado_nombre}, ${r.bien_tipo},
+          ${r.bien_descripcion}, ${r.monto_reclamado}, ${r.tipo_solicitud},
+          ${r.detalle}, ${r.pedido}, ${r.ip}, ${r.user_agent}
+        )`;
       inserted = true;
-      break;
-    }
-    if (error.code !== "23505") {
-      console.error("[reclamos] insert falló:", error);
-      return { ok: false, error: "No se pudo registrar tu reclamo. Intenta de nuevo." };
+    } catch (err) {
+      if (pgErrorCode(err) !== "23505") {
+        console.error("[reclamos] insert falló:", err);
+        return { ok: false, error: "No se pudo registrar tu reclamo. Intenta de nuevo." };
+      }
     }
   }
   if (!inserted) {

@@ -1,0 +1,64 @@
+# Backup nocturno de la base de Neon (leads + Libro de Reclamaciones).
+#
+# El repositorio es PÚBLICO: los artifacts de Actions los puede descargar
+# cualquier usuario de GitHub. Por eso el dump se CIFRA (AES-256, GPG) antes
+# de subirlo; sin la frase secreta el archivo no sirve de nada.
+#
+# Secrets necesarios (Settings → Secrets and variables → Actions):
+#   NEON_DIRECT_URL     cadena de conexión DIRECTA de Neon (sin "-pooler")
+#   BACKUP_PASSPHRASE   frase larga para cifrar; guárdala también en tu gestor
+#                       de contraseñas: sin ella no podrás restaurar.
+#
+# Restaurar:
+#   gpg --decrypt platita-AAAA-MM-DD.dump.gpg > platita.dump
+#   pg_restore --no-owner --dbname "$DATABASE_URL" platita.dump
+
+name: Backup base de datos
+
+on:
+  schedule:
+    - cron: "0 8 * * *" # 03:00 hora de Lima
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Comprobar secrets
+        env:
+          NEON_DIRECT_URL: ${{ secrets.NEON_DIRECT_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$NEON_DIRECT_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Faltan los secrets NEON_DIRECT_URL y/o BACKUP_PASSPHRASE"
+            exit 1
+          fi
+
+      - name: Volcar y cifrar
+        env:
+          NEON_DIRECT_URL: ${{ secrets.NEON_DIRECT_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          FILE="platita-$(date -u +%F).dump"
+          # pg_dump 18 puede volcar servidores Postgres 18 o anteriores.
+          docker run --rm -e NEON_DIRECT_URL postgres:18 \
+            sh -c 'pg_dump --format=custom --no-owner --no-privileges "$NEON_DIRECT_URL"' > "$FILE"
+          test -s "$FILE"
+          gpg --batch --yes --pinentry-mode loopback --symmetric --cipher-algo AES256 \
+            --passphrase-fd 3 --output "$FILE.gpg" "$FILE" 3<<<"$BACKUP_PASSPHRASE"
+          rm -f "$FILE"
+          echo "FILE=$FILE.gpg" >> "$GITHUB_ENV"
+          ls -lh "$FILE.gpg"
+
+      - name: Guardar backup cifrado
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.FILE }}
+          path: ${{ env.FILE }}
+          retention-days: 90
+          if-no-files-found: error

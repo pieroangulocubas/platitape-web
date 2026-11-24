@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import ScrollWorld from "./ScrollWorld";
 import VslPlayer from "./VslPlayer";
 
 /* ── icons ── */
@@ -67,6 +68,84 @@ const steps: Step[] = [
   },
 ];
 
+function StepsGrid() {
+  return (
+  <div className="relative">
+    {/* Connector line — desktop only */}
+    <div
+      className="hidden lg:block absolute"
+      style={{
+        top: "54px",
+        left: "calc(12.5% + 4px)",
+        right: "calc(12.5% + 4px)",
+        height: "2px",
+        background: "linear-gradient(90deg, #bc45e9 0%, #6cdcff 50%, #bc45e9 100%)",
+        opacity: 0.25,
+        zIndex: 0,
+        borderRadius: "99px",
+      }}
+    />
+    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative" style={{ zIndex: 1 }}>
+      {steps.map((step, i) => (
+        step.highlight ? (
+          <div
+            key={i}
+            className="rounded-3xl p-7 flex flex-col gap-4 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, #1c0f4c 0%, #6b1fa8 55%, #bc45e9 100%)",
+              border: "1px solid rgba(188,69,233,0.4)",
+              boxShadow: "0 8px 40px rgba(188,69,233,0.28), 0 2px 12px rgba(28,15,76,0.18)",
+            }}
+          >
+            {/* subtle inner glow */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: "radial-gradient(ellipse at 70% 20%, rgba(108,220,255,0.15) 0%, transparent 65%)",
+            }} />
+            <div className="step-number relative z-10" style={{ color: "rgba(255,255,255,0.35)" }}>{step.number}</div>
+            <div
+              className="w-11 h-11 rounded-2xl flex items-center justify-center relative z-10"
+              style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.22)" }}
+            >
+              {step.icon}
+            </div>
+            <div className="relative z-10">
+              <h3 className="font-bold text-lg mb-2 text-white">{step.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.68)" }}>
+                {step.description}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div
+            key={i}
+            className="rounded-3xl p-7 flex flex-col gap-4 group hover:-translate-y-2 transition-all duration-300"
+            style={{
+              background: "#ffffff",
+              border: "1px solid #e6e3f5",
+              boxShadow: "0 1px 4px rgba(28,15,76,0.06), 0 4px 20px rgba(28,15,76,0.04)",
+            }}
+          >
+            <div className="step-number">{step.number}</div>
+            <div
+              className="w-11 h-11 rounded-2xl flex items-center justify-center"
+              style={{ background: "rgba(28,15,76,0.06)", border: "1px solid rgba(28,15,76,0.1)" }}
+            >
+              {step.icon}
+            </div>
+            <div>
+              <h3 className="font-bold text-lg mb-2" style={{ color: "#1c0f4c" }}>{step.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(15,10,46,0.66)" }}>
+                {step.description}
+              </p>
+            </div>
+          </div>
+        )
+      ))}
+    </div>
+  </div>
+  );
+}
+
 export default function HowItWorksSection() {
   return (
     <section id="como-funciona" className="py-14 md:py-24 px-4" style={{ background: "#ffffff" }}>
@@ -117,81 +196,21 @@ export default function HowItWorksSection() {
           <div className="flex-1 h-px" style={{ background: "rgba(28,15,76,0.12)" }} />
         </div>
 
-        {/* ── Steps ── */}
-        <div className="relative">
-          {/* Connector line — desktop only */}
-          <div
-            className="hidden lg:block absolute"
-            style={{
-              top: "54px",
-              left: "calc(12.5% + 4px)",
-              right: "calc(12.5% + 4px)",
-              height: "2px",
-              background: "linear-gradient(90deg, #bc45e9 0%, #6cdcff 50%, #bc45e9 100%)",
-              opacity: 0.25,
-              zIndex: 0,
-              borderRadius: "99px",
-            }}
-          />
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative" style={{ zIndex: 1 }}>
-            {steps.map((step, i) => (
-              step.highlight ? (
-                <div
-                  key={i}
-                  className="rounded-3xl p-7 flex flex-col gap-4 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden"
-                  style={{
-                    background: "linear-gradient(135deg, #1c0f4c 0%, #6b1fa8 55%, #bc45e9 100%)",
-                    border: "1px solid rgba(188,69,233,0.4)",
-                    boxShadow: "0 8px 40px rgba(188,69,233,0.28), 0 2px 12px rgba(28,15,76,0.18)",
-                  }}
-                >
-                  {/* subtle inner glow */}
-                  <div className="absolute inset-0 pointer-events-none" style={{
-                    background: "radial-gradient(ellipse at 70% 20%, rgba(108,220,255,0.15) 0%, transparent 65%)",
-                  }} />
-                  <div className="step-number relative z-10" style={{ color: "rgba(255,255,255,0.35)" }}>{step.number}</div>
-                  <div
-                    className="w-11 h-11 rounded-2xl flex items-center justify-center relative z-10"
-                    style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.22)" }}
-                  >
-                    {step.icon}
-                  </div>
-                  <div className="relative z-10">
-                    <h3 className="font-bold text-lg mb-2 text-white">{step.title}</h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.68)" }}>
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  key={i}
-                  className="rounded-3xl p-7 flex flex-col gap-4 group hover:-translate-y-2 transition-all duration-300"
-                  style={{
-                    background: "#ffffff",
-                    border: "1px solid #e6e3f5",
-                    boxShadow: "0 1px 4px rgba(28,15,76,0.06), 0 4px 20px rgba(28,15,76,0.04)",
-                  }}
-                >
-                  <div className="step-number">{step.number}</div>
-                  <div
-                    className="w-11 h-11 rounded-2xl flex items-center justify-center"
-                    style={{ background: "rgba(28,15,76,0.06)", border: "1px solid rgba(28,15,76,0.1)" }}
-                  >
-                    {step.icon}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2" style={{ color: "#1c0f4c" }}>{step.title}</h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(15,10,46,0.66)" }}>
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              )
-            ))}
-          </div>
-        </div>
+      </div>
 
+      {/* ── Scroll world: la llama recorre los 4 pasos (grilla estática con movimiento reducido) ── */}
+      <div className="-mx-4">
+        <ScrollWorld
+          steps={steps.map(({ number, title, description }) => ({ number, title, description }))}
+          fallback={
+            <div className="max-w-6xl mx-auto px-4">
+              <StepsGrid />
+            </div>
+          }
+        />
+      </div>
+
+      <div className="max-w-6xl mx-auto">
         {/* ── CTA ── */}
         <div className="text-center mt-12">
           <a href="#registro" className="btn-gradient inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-bold">

@@ -1,5 +1,5 @@
-import { verifyEmailByToken } from "@/lib/supabase";
-import { supabaseEnabled } from "@/lib/config";
+import { verifyEmailByToken } from "@/lib/db";
+import { dbEnabled } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +29,7 @@ function page(title: string, body: string): Response {
 export async function GET(req: Request) {
   const token = new URL(req.url).searchParams.get("token") ?? "";
 
-  if (!supabaseEnabled) {
+  if (!dbEnabled) {
     return page("Verificación no disponible", "Inténtalo más tarde o escríbenos por WhatsApp.");
   }
 
