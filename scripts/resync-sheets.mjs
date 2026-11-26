@@ -3,8 +3,8 @@
 //
 // Útil como cron en Vercel o manual tras una caída de la API de Sheets.
 
-import { loadEnvConfig } from "@next/env";
-loadEnvConfig(process.cwd());
+import nextEnv from "@next/env";
+nextEnv.loadEnvConfig(process.cwd());
 
 import { neon } from "@neondatabase/serverless";
 

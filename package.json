@@ -8,11 +8,16 @@
     "start": "next start",
     "lint": "eslint",
     "test:resend": "node scripts/test-resend.mjs",
-    "db:migrate": "node scripts/db-migrate.mjs",
-    "db:copy-from-supabase": "node scripts/copy-from-supabase.mjs"
+    "db:migrate": "node scripts/db-migrate.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1178.0",
+    "@aws-sdk/s3-presigned-post": "^3.1178.0",
+    "@aws-sdk/s3-request-presigner": "^3.1178.0",
+    "@neon/config": "^1.14.8",
+    "@neon/env": "^2.1.11",
     "@neondatabase/serverless": "^1.2.1",
+    "files-sdk": "^3.2.1",
     "googleapis": "^173.0.0",
     "next": "16.2.2",
     "react": "19.2.4",
@@ -20,7 +25,6 @@
     "resend": "^6.25.0"
   },
   "devDependencies": {
-    "@supabase/supabase-js": "^2.119.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -4,19 +4,20 @@
 //
 //   npm run db:migrate
 //
-// Usa DATABASE_URL de .env.local (o del entorno).
+// Usa DATABASE_URL_UNPOOLED (o DATABASE_URL) de .env.local o del entorno.
 
-import { loadEnvConfig } from "@next/env";
+import nextEnv from "@next/env";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { Client, neonConfig } from "@neondatabase/serverless";
 
-loadEnvConfig(process.cwd());
+nextEnv.loadEnvConfig(process.cwd());
 neonConfig.webSocketConstructor = globalThis.WebSocket;
 
-const url = process.env.DATABASE_URL;
+// Migraciones por la conexión directa (sin pool), como recomienda Neon para DDL.
+const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
 if (!url) {
-  console.error("Falta DATABASE_URL (cadena de conexión de Neon).");
+  console.error("Falta DATABASE_URL_UNPOOLED / DATABASE_URL (cadena de conexión de Neon).");
   process.exit(1);
 }
 

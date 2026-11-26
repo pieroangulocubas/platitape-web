@@ -50,3 +50,11 @@ next-env.d.ts
 !public/design/*.mp4
 *.pdf
 .gstack/
+.neon
+
+.env*.local
+
+# Configuración local de agentes instalada por `neon init`
+.agents/
+.codex/
+skills-lock.json

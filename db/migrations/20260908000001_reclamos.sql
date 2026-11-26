@@ -1,6 +1,6 @@
 -- Libro de Reclamaciones virtual (D.S. N.° 011-2011-PCM y modificatorias).
 -- Fuente de verdad de las hojas de reclamación. RLS activo sin políticas:
--- sólo la Secret Key (service role) accede. El navegador nunca lee esta tabla.
+-- sólo el rol dueño de la base (el servidor) accede. El navegador nunca lee esta tabla.
 
 create extension if not exists "pgcrypto";
 

@@ -231,6 +231,20 @@ a { color: #a234cc; text-decoration: none; }
 a:hover { color: #1c0f4c; }
 h1, h2, h3 { font-family: var(--font-display); }
 :focus-visible { outline: 3px solid #bc45e9; outline-offset: 3px; border-radius: 8px; }
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1001;
+  padding: 12px 16px;
+  transform: translateY(calc(-100% - 16px));
+  border-radius: 8px;
+  background: #1c0f4c;
+  color: #fff;
+  font-weight: 800;
+}
+.skip-link:focus-visible { transform: translateY(0); color: #fff; }
+#main-content { scroll-margin-top: 80px; }
 footer a { display: inline-flex; align-items: center; min-height: 44px; }
 
 /* Animaciones propias de la página (del <helmet> del diseño). */
@@ -258,3 +272,29 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; }
 .dch8:hover{transform:translateY(-2px) !important}
 .dch9:focus-within{border-color:#bc45e9 !important;box-shadow:0 0 0 3px rgba(188,69,233,.10) !important}
 .dch10:hover{transform:translateY(-2px) !important}
+
+/* Placeholders legibles (antes ~3.4:1 sobre blanco). */
+input::placeholder, textarea::placeholder { color: #6b6585; opacity: 1; }
+
+/* Degradado de botones y sellos con texto blanco: del cian (1.9:1) al azul-violeta
+   y magenta del sistema (≥4.5:1). El cian queda para acentos sin texto encima. */
+:root {
+  --grad-brand: linear-gradient(135deg, #3f6fd8, #a234cc);
+  --grad-brand-hover: linear-gradient(135deg, #2f5bc4, #8f2bb8);
+}
+
+/* Reveal al entrar en pantalla, solo con CSS (scroll-driven animations).
+   Mejora progresiva: sin soporte (Safari < 26, Firefox < 159) o con movimiento
+   reducido, el contenido aparece directamente. Sin polyfill ni JavaScript. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes reveal-in {
+      from { opacity: 0; translate: 0 32px; }
+    }
+    [data-reveal] {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+}

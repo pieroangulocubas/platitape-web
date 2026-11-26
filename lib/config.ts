@@ -31,6 +31,24 @@ export const WA_CONTACT_URL = `${WA_BASE_URL}?text=${WA_CONTACT_MSG}`;
 export const DATABASE_URL = process.env.DATABASE_URL ?? "";
 export const dbEnabled = Boolean(DATABASE_URL);
 
+// --- Object Storage de Neon (S3-compatible) --------------------------------
+// `neon deploy` / `neon env pull` escriben los nombres AWS_* en .env.local.
+// Vercel reserva AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY y AWS_REGION, así
+// que en Vercel se configuran con el prefijo NEON_STORAGE_* (tienen prioridad).
+// https://neon.com/docs/storage/overview
+export const STORAGE_BUCKET = process.env.NEON_STORAGE_BUCKET ?? "platitabucket";
+export const STORAGE_ENDPOINT =
+  process.env.NEON_STORAGE_ENDPOINT ?? process.env.AWS_ENDPOINT_URL_S3 ?? "";
+export const STORAGE_ACCESS_KEY_ID =
+  process.env.NEON_STORAGE_ACCESS_KEY_ID ?? process.env.AWS_ACCESS_KEY_ID ?? "";
+export const STORAGE_SECRET_ACCESS_KEY =
+  process.env.NEON_STORAGE_SECRET_ACCESS_KEY ?? process.env.AWS_SECRET_ACCESS_KEY ?? "";
+export const STORAGE_REGION =
+  process.env.NEON_STORAGE_REGION ?? process.env.AWS_REGION ?? "us-east-1";
+export const storageEnabled = Boolean(
+  STORAGE_ENDPOINT && STORAGE_ACCESS_KEY_ID && STORAGE_SECRET_ACCESS_KEY
+);
+
 // --- Cloudflare Turnstile (CAPTCHA) ------------------------------------
 // https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
 export const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY ?? "";

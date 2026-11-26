@@ -661,7 +661,7 @@ const {
 } = React;
 const TIERS = {
   1: {
-    c: "#0089a8",
+    c: "#007a96",
     icon: "wallet",
     name: "Inicial"
   },
@@ -899,7 +899,7 @@ const {
 function ProjectCard({
   name,
   icon = "urbanizacion",
-  accent = "#0089a8",
+  accent = "#007a96",
   image,
   bullets = [],
   plazo = "12 meses",
@@ -1640,8 +1640,8 @@ function RangeSlider({
     style: {
       position: "relative",
       marginTop: 8,
-      height: 16,
-      fontSize: "0.65rem",
+      height: 18,
+      fontSize: "0.75rem",
       fontWeight: 600,
       color: "var(--text-body)"
     }
@@ -1785,8 +1785,8 @@ function FieldShell({
     color: "#dc2626"
   }), error) : hint ? /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: "0.68rem",
-      color: "var(--text-hint)"
+      fontSize: "0.75rem",
+      color: "var(--text-body)"
     }
   }, hint) : null);
 }
@@ -1925,6 +1925,7 @@ function Footer({
     }
   }, llamaSrc ? /*#__PURE__*/React.createElement("img", {
     src: llamaSrc,
+    loading: "lazy",
     alt: "",
     "aria-hidden": "true",
     style: {
@@ -1998,7 +1999,7 @@ function Footer({
   }, /*#__PURE__*/React.createElement("p", {
     style: {
       fontSize: 12,
-      color: "rgba(15,10,46,0.5)",
+      color: "rgba(15,10,46,0.66)",
       margin: 0
     }
   }, razonSocial, " \xB7 RUC ", ruc), /*#__PURE__*/React.createElement("div", {
