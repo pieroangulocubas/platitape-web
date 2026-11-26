@@ -36,6 +36,6 @@ create index if not exists leads_unsynced_idx
   on public.leads (created_at)
   where sheets_synced = false;
 
--- RLS activo y SIN políticas: sólo la Secret Key (service role) puede
+-- RLS activo y SIN políticas: sólo el rol dueño de la base (el servidor) puede
 -- leer/escribir. El navegador nunca accede a esta tabla directamente.
 alter table public.leads enable row level security;

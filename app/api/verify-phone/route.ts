@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
-import { verifyPhoneByCode } from "@/lib/supabase";
-import { INTERNAL_API_SECRET, supabaseEnabled } from "@/lib/config";
+import { verifyPhoneByCode } from "@/lib/db";
+import { INTERNAL_API_SECRET, dbEnabled } from "@/lib/config";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -25,8 +25,8 @@ function safeEqual(a: string, b: string): boolean {
  *     -d '{"code":"ABC12"}'
  */
 export async function POST(req: Request) {
-  if (!supabaseEnabled) {
-    return NextResponse.json({ error: "Supabase no configurado." }, { status: 501 });
+  if (!dbEnabled) {
+    return NextResponse.json({ error: "Base de datos no configurada." }, { status: 501 });
   }
   if (!INTERNAL_API_SECRET) {
     return NextResponse.json(

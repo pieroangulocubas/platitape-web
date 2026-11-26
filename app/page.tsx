@@ -1,39 +1,7 @@
-import AppPreviewSection from "@/components/AppPreviewSection";
-import BercorpSection from "@/components/BercorpSection";
-import ComparativoSection from "@/components/ComparativoSection";
-import Footer from "@/components/Footer";
-import FormSection from "@/components/FormSection";
-import HeroSection from "@/components/HeroSection";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import { RespaldoLegalBand } from "@/components/LegalTicker";
-import Navbar from "@/components/Navbar";
-import PlanesSection from "@/components/PlanesSection";
-import ProyectosSection from "@/components/ProyectosSection";
-import SimuladorSection from "@/components/SimuladorSection";
-import StickyMobileCTA from "@/components/StickyMobileCTA";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import Landing from "@/components/landing/Landing";
 
+// Landing v2 (rediseño de Claude Design). Las secciones anteriores siguen en
+// components/ pero ya no se usan en esta página.
 export default function Home() {
-  return (
-    <>
-      <Navbar />
-      <main>
-        <HeroSection />
-        <ProyectosSection />
-        <PlanesSection />
-        <RespaldoLegalBand />
-        <HowItWorksSection />
-        <BercorpSection />
-        <SimuladorSection />
-        <ComparativoSection />
-        <FormSection />
-        <AppPreviewSection />
-        <TestimonialsSection />
-      </main>
-      <Footer />
-      <WhatsAppButton />
-      <StickyMobileCTA />
-    </>
-  );
+  return <Landing />;
 }

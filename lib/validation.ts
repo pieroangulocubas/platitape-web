@@ -87,12 +87,17 @@ export function ageFromISODate(iso: string): number | null {
 }
 
 export const MONTO_INTERES_VALUES = [
+  // Rangos de la landing v2.
+  "10-50k",
+  "50-100k",
+  "100-500k",
+  "500k+",
+  "explorando",
+  // Rangos de la landing anterior (se siguen aceptando).
   "10-25k",
   "25-50k",
-  "50-100k",
   "100-250k",
   "250k+",
-  "explorando",
 ] as const;
 export type MontoInteres = (typeof MONTO_INTERES_VALUES)[number];
 
@@ -105,6 +110,7 @@ export interface RegistroInput {
   distrito: string;
   /** "Perú" o, para leads del extranjero, texto libre "Ciudad, País". */
   pais: string;
+  /** ISO (AAAA-MM-DD) o "" si el lead solo declaró ser mayor de edad. */
   fechaNacimiento: string;
   montoInteres: MontoInteres;
 }
@@ -137,6 +143,8 @@ export function validateRegistro(
   const viveExtranjero =
     body.viveExtranjero === true || body.viveExtranjero === "true";
   const ubicacionExtranjero = collapseSpaces(str(body.ubicacionExtranjero));
+  // La landing v2 pide confirmar la mayoría de edad en lugar de la fecha de nacimiento.
+  const mayorDeEdad = body.mayorDeEdad === true || body.mayorDeEdad === "true";
 
   if (nombre.length < 2 || nombre.length > MAX.nombre)
     return { ok: false, error: "Ingresa tu nombre completo.", field: "nombre" };
@@ -172,7 +180,7 @@ export function validateRegistro(
     }
   }
 
-  if (ageFromISODate(fechaNacimiento) === null)
+  if (fechaNacimiento ? ageFromISODate(fechaNacimiento) === null : !mayorDeEdad)
     return {
       ok: false,
       error: "Debes ser mayor de edad (fecha de nacimiento inválida).",
@@ -195,7 +203,7 @@ export function validateRegistro(
       provincia: viveExtranjero ? "" : provincia,
       distrito: viveExtranjero ? "" : distrito,
       pais,
-      fechaNacimiento,
+      fechaNacimiento: fechaNacimiento && ageFromISODate(fechaNacimiento) !== null ? fechaNacimiento : "",
       montoInteres: montoInteres as MontoInteres,
     },
   };
@@ -335,6 +343,68 @@ export function validateReclamo(
       tipoSolicitud,
       detalle,
       pedido,
+    },
+  };
+}
+
+/* ───────────────────── Programa de Asesores ───────────────────── */
+
+export const EXPERIENCIA_VALUES = ["ninguna", "menos-1", "1-3", "3-mas"] as const;
+export type Experiencia = (typeof EXPERIENCIA_VALUES)[number];
+
+export interface AsesorInput {
+  nombre: string;
+  dni: string;
+  telefono: string;
+  correo: string;
+  ciudad: string;
+  /** Una opción de EXPERIENCIA_VALUES (landing anterior) o texto libre (landing v2). */
+  experiencia: string;
+  /** CCI de 20 dígitos para pagar comisiones (landing v2); "" si no se envió. */
+  cci: string;
+  aceptaTerminos: true;
+}
+
+export function validateAsesor(
+  body: Record<string, unknown>
+): ValidationResult<AsesorInput> {
+  const nombre = collapseSpaces(str(body.nombre));
+  const dni = str(body.dni).replace(/\D/g, "");
+  const telefono = normalizePhone(str(body.telefono));
+  const correo = normalizeEmail(str(body.correo));
+  const ciudad = collapseSpaces(str(body.ciudad));
+  const experiencia = collapseSpaces(str(body.experiencia));
+  const cci = str(body.cci).replace(/\D/g, "");
+  const aceptaTerminos = body.aceptaTerminos === true || body.aceptaTerminos === "true";
+
+  if (nombre.length < 2 || nombre.length > MAX.nombre)
+    return { ok: false, error: "Ingresa tus nombres y apellidos.", field: "nombre" };
+  if (!/^\d{8}$/.test(dni))
+    return { ok: false, error: "El DNI debe tener 8 dígitos.", field: "dni" };
+  if (!isValidPhone(telefono))
+    return { ok: false, error: "Ingresa un número de celular válido.", field: "telefono" };
+  if (!isEmail(correo))
+    return { ok: false, error: "El correo no tiene un formato válido.", field: "correo" };
+  if (ciudad.length < 2 || ciudad.length > MAX.ubicacion)
+    return { ok: false, error: "Indica tu ciudad.", field: "ciudad" };
+  if (experiencia.length > 120)
+    return { ok: false, error: "La experiencia es demasiado larga.", field: "experiencia" };
+  if (cci && cci.length !== 20)
+    return { ok: false, error: "El CCI debe tener 20 dígitos.", field: "cci" };
+  if (!aceptaTerminos)
+    return { ok: false, error: "Debes aceptar los términos del programa.", field: "aceptaTerminos" };
+
+  return {
+    ok: true,
+    data: {
+      nombre,
+      dni,
+      telefono,
+      correo,
+      ciudad,
+      experiencia,
+      cci,
+      aceptaTerminos: true,
     },
   };
 }

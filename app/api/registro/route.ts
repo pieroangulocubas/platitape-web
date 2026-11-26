@@ -65,7 +65,7 @@ export async function POST(req: Request) {
   }
   const meta = extractMeta(body, req.headers.get("user-agent") ?? "");
 
-  // 6. Persistir (Supabase + espejo Sheets) y disparar emails.
+  // 6. Persistir (Postgres en Neon + espejo Sheets) y disparar emails.
   try {
     const r = await processRegistro(result.data, meta);
     if (!r.ok) {

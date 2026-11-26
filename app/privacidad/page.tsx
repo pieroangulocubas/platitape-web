@@ -160,8 +160,9 @@ export default function PrivacidadPage() {
           Francisco, California, EE. UU.).
         </li>
         <li>
-          <strong>Base de datos y autenticación en la nube:</strong> Supabase
-          Inc. (San Francisco, California, EE. UU. / infraestructura AWS).
+          <strong>Base de datos en la nube:</strong> Neon, servicio de
+          Databricks, Inc. (San Francisco, California, EE. UU. / infraestructura
+          AWS).
         </li>
         <li>
           <strong>Envío de correos electrónicos transaccionales:</strong> Resend

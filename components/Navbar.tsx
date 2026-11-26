@@ -78,7 +78,9 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className={`group relative pb-1 text-xs lg:text-sm font-semibold transition-colors duration-200 ${
+                className={`group relative pb-1 whitespace-nowrap text-xs lg:text-sm font-semibold transition-colors duration-200 ${
+                  link.secondary ? "hidden xl:inline-block" : ""
+                } ${
                   isActive ? "text-[#1c0f4c]" : "text-[rgba(15,10,46,0.66)] hover:text-[#1c0f4c]"
                 }`}
               >

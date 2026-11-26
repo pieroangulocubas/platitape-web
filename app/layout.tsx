@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
+import { Nunito, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import ScrollReveal from "@/components/ScrollReveal";
 import Analytics from "@/components/Analytics";
 import CookieConsent from "@/components/CookieConsent";
 import { SITE_URL, WA_CHANNEL_URL } from "@/lib/config";
@@ -13,9 +12,17 @@ const nunito = Nunito({
   display: "swap",
 });
 
-const TITLE = "Platita.pe — Haz crecer tu dinero en bienes raíces";
+// Titulares de la landing v2 (Claude Design).
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  display: "swap",
+});
+
+const TITLE = "Platita.pe · Invierte en proyectos inmobiliarios desde S/ 10,000";
 const DESCRIPTION =
-  "Invierte desde S/10,000 en proyectos inmobiliarios seleccionados del Perú. Rentabilidades de hasta 20% anual según el monto. 100% online, con contrato notarial.";
+  "Invierte desde S/ 10,000 en proyectos inmobiliarios reales en el Perú y recibe hasta 20% anual, con abonos mensuales y contrato notarial. Únete a la lista de espera.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -118,7 +125,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${nunito.variable} h-full antialiased`}
+      className={`${nunito.variable} ${jakarta.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <script
@@ -126,7 +133,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
-        <ScrollReveal />
         <Analytics />
         <CookieConsent />
       </body>

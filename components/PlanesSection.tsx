@@ -117,7 +117,7 @@ export default function PlanesSection() {
 
                 <div>
                   <p className="text-sm font-black tracking-widest uppercase" style={{ color: accent }}>
-                    Plan {tier.id}
+                    {tier.label}
                   </p>
                   <div
                     className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold"
@@ -179,8 +179,8 @@ export default function PlanesSection() {
               correspondiente a la nueva categoría.
             </p>
             <p className="text-xs mt-3 px-3 py-2 rounded-xl inline-block" style={{ background: "rgba(255,255,255,0.85)", color: "rgba(8,11,30,0.72)" }}>
-              Ejemplo: empiezas con S/10,000 (Plan 1, 14%). A los 2 meses agregas S/40,000 más — se suma el saldo
-              total (S/50,000) y desde esa fecha corre un nuevo contrato de 12 meses al 16% (Plan 2), y así
+              Ejemplo: empiezas con S/10,000 (Plan Inicial, 14%). A los 2 meses agregas S/40,000 más — se suma el saldo
+              total (S/50,000) y desde esa fecha corre un nuevo contrato de 12 meses al 16% (Plan Avanza), y así
               sucesivamente.
             </p>
           </div>

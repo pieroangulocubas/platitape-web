@@ -46,5 +46,15 @@ next-env.d.ts
 
 # large media — host on Vercel Blob or CDN instead
 *.mp4
+# Excepción: videos ya optimizados que usa la landing (hero, Conócenos, Jardines).
+!public/design/*.mp4
 *.pdf
 .gstack/
+.neon
+
+.env*.local
+
+# Configuración local de agentes instalada por `neon init`
+.agents/
+.codex/
+skills-lock.json

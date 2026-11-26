@@ -11,10 +11,10 @@ export interface PlanTier {
 }
 
 export const PLAN_TIERS: PlanTier[] = [
-  { id: 1, min: 10000, max: 49999, rate: 0.14, label: "Plan 1" },
-  { id: 2, min: 50000, max: 99999, rate: 0.16, label: "Plan 2" },
-  { id: 3, min: 100000, max: 499999, rate: 0.18, label: "Plan 3" },
-  { id: 4, min: 500000, max: null, rate: 0.20, label: "Plan 4" },
+  { id: 1, min: 10000, max: 49999, rate: 0.14, label: "Plan Inicial" },
+  { id: 2, min: 50000, max: 99999, rate: 0.16, label: "Plan Avanza" },
+  { id: 3, min: 100000, max: 499999, rate: 0.18, label: "Plan Crece" },
+  { id: 4, min: 500000, max: null, rate: 0.20, label: "Plan Patrimonio" },
 ];
 
 export const MIN_INVESTMENT = PLAN_TIERS[0].min;

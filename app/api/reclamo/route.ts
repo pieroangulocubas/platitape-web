@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: result.error, field: result.field }, { status: 400 });
   }
 
-  // 6. Persistir (Supabase) y disparar emails tras responder.
+  // 6. Persistir (Postgres en Neon) y disparar emails tras responder.
   try {
     const r = await processReclamo(result.data, {
       ip,

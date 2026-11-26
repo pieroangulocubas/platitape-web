@@ -98,7 +98,7 @@ export async function appendRegistro(row: string[]) {
 
 /* ─────────────────────────────────────────────────────────────
  * Espejo (mirror). Google Sheets NO es la fuente de verdad cuando
- * Supabase está activo: es una copia de lectura para el equipo.
+ * la base de datos (Neon) está activa: es una copia de lectura para el equipo.
  * Estas funciones nunca lanzan; devuelven true/false y reintentan.
  * ──────────────────────────────────────────────────────────── */
 
@@ -118,4 +118,24 @@ async function withRetry(fn: () => Promise<void>, tries = 2): Promise<boolean> {
 export async function mirrorRegistro(row: string[]): Promise<boolean> {
   if (!sheetsEnabled) return false;
   return withRetry(() => appendRegistro(row).then(() => undefined));
+}
+
+const ASESOR_HEADERS = [
+  "Fecha de postulación",
+  "Nombres y apellidos",
+  "DNI",
+  "Celular",
+  "Correo",
+  "Ciudad",
+  "Experiencia comercial",
+  "Estado",
+  ...META_HEADERS,
+  "CCI",
+];
+
+/** Postulaciones al Programa de Asesores (pestaña propia del mismo spreadsheet). */
+export async function mirrorAsesor(row: string[]): Promise<boolean> {
+  if (!sheetsEnabled) return false;
+  const sheetName = process.env.GOOGLE_SHEETS_ASESORES_SHEET_NAME || "Asesores";
+  return withRetry(() => appendRow(sheetName, ASESOR_HEADERS, row));
 }
